@@ -1,3 +1,4 @@
+import 'package:dpwdapp/core/Routes.dart';
 import 'package:flutter/material.dart';
 
 class ImportWallet extends StatelessWidget {
@@ -74,7 +75,9 @@ class ImportWallet extends StatelessWidget {
                 ),
                 SizedBox(height: 16),
                 ElevatedButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.pushNamed(context, AppRoutes.ROUTE_LoginPage);
+                  },
                   child: Text("LOGIN"),
                   style: ElevatedButton.styleFrom(
                       elevation: 0, primary: Colors.green),

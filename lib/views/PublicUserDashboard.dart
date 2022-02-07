@@ -1,3 +1,5 @@
+import 'package:dpwdapp/components/buttons/PrimaryButton.dart';
+import 'package:dpwdapp/core/Routes.dart';
 import 'package:flutter/material.dart';
 
 class PublicUserDashboard extends StatelessWidget {
@@ -17,7 +19,7 @@ class PublicUserDashboard extends StatelessWidget {
       floatingActionButtonLocation: FloatingActionButtonLocation.startTop,
       body: SingleChildScrollView(
         child: Container(
-          padding: EdgeInsets.only(left: 32, right: 32),
+          padding: EdgeInsets.only(left: 32, right: 32, bottom: 32),
           alignment: Alignment.center,
           child: Column(
             children: [
@@ -62,24 +64,16 @@ class PublicUserDashboard extends StatelessWidget {
                     ),
                     child: Column(
                       children: [
-                        ElevatedButton(
+                        PrimaryButton(
+                          title: "View My Complaints",
                           onPressed: () {},
-                          child: Text("View My Complaints"),
-                          style: ElevatedButton.styleFrom(
-                              minimumSize: Size(double.infinity, 48),
-                              elevation: 0,
-                              primary: Colors.green),
                         ),
                         SizedBox(
                           height: 8,
                         ),
-                        ElevatedButton(
+                        PrimaryButton(
                           onPressed: () {},
-                          child: Text("Register New Complaint"),
-                          style: ElevatedButton.styleFrom(
-                              minimumSize: Size(double.infinity, 48),
-                              elevation: 0,
-                              primary: Colors.green),
+                          title: "Register New Complaint",
                         ),
                       ],
                     ),
@@ -87,109 +81,85 @@ class PublicUserDashboard extends StatelessWidget {
                 ],
               )),
               Container(
-                margin: EdgeInsets.only(top:16),
+                  margin: EdgeInsets.only(top: 16),
                   child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text("Projects"),
-                  SizedBox(
-                    height: 4,
-                  ),
-                  Container(
-                    padding: EdgeInsets.all(12),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(8),
-                      color: Colors.white,
-                    ),
-                    child: Column(
-                      children: [
-                        ElevatedButton(
-                          onPressed: () {},
-                          child: Text("View On Going Projects"),
-                          style: ElevatedButton.styleFrom(
-                              minimumSize: Size(double.infinity, 48),
-                              elevation: 0,
-                              primary: Colors.green),
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text("Projects"),
+                      SizedBox(
+                        height: 4,
+                      ),
+                      Container(
+                        padding: EdgeInsets.all(12),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(8),
+                          color: Colors.white,
                         ),
-                        SizedBox(
-                          height: 8,
+                        child: Column(
+                          children: [
+                            PrimaryButton(
+                              onPressed: () {
+                                Navigator.pushNamed(context, AppRoutes.ROUTE_ViewProjects);
+                              },
+                              title: "View On Going Projects",
+                            ),
+                            SizedBox(
+                              height: 8,
+                            ),
+                            PrimaryButton(
+                              onPressed: () {},
+                              title: "View Upcoming Projects",
+                            ),
+                            SizedBox(
+                              height: 8,
+                            ),
+                            PrimaryButton(
+                                onPressed: () {}, title: "View All Projects"),
+                          ],
                         ),
-                        ElevatedButton(
-                          onPressed: () {},
-                          child: Text("View Upcoming Projects"),
-                          style: ElevatedButton.styleFrom(
-                              minimumSize: Size(double.infinity, 48),
-                              elevation: 0,
-                              primary: Colors.green),
-                        ),
-                        SizedBox(
-                          height: 8,
-                        ),
-                        ElevatedButton(
-                          onPressed: () {},
-                          child: Text("View All Projects"),
-                          style: ElevatedButton.styleFrom(
-                              minimumSize: Size(double.infinity, 48),
-                              elevation: 0,
-                              primary: Colors.green),
-                        ),
-                      ],
-                    ),
-                  )
-                ],
-              )),
+                      )
+                    ],
+                  )),
               Container(
-                margin: EdgeInsets.only(top:16),
+                  margin: EdgeInsets.only(top: 16),
                   child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text("Road Projects"),
-                  SizedBox(
-                    height: 4,
-                  ),
-                  Container(
-                    padding: EdgeInsets.all(12),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(8),
-                      color: Colors.white,
-                    ),
-                    child: Column(
-                      children: [
-                        ElevatedButton(
-                          onPressed: () {},
-                          child: Text("View OnComing Projects"),
-                          style: ElevatedButton.styleFrom(
-                              minimumSize: Size(double.infinity, 48),
-                              elevation: 0,
-                              primary: Colors.green),
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text("Road Projects"),
+                      SizedBox(
+                        height: 4,
+                      ),
+                      Container(
+                        padding: EdgeInsets.all(12),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(8),
+                          color: Colors.white,
                         ),
-                        SizedBox(
-                          height: 8,
+                        child: Column(
+                          children: [
+                            PrimaryButton(
+                              onPressed: () {},
+                              title: "View OnComing Projects",
+                            ),
+                            SizedBox(
+                              height: 8,
+                            ),
+                            PrimaryButton(
+                              onPressed: () {},
+                              title: "View On Going Projects",
+                            ),
+                            SizedBox(
+                              height: 8,
+                            ),
+                            PrimaryButton(
+                              onPressed: () {},
+                              title: "View On All Projects",
+                            ),
+                          ],
                         ),
-                        ElevatedButton(
-                          onPressed: () {},
-                          child: Text("View On Going Projects"),
-                          style: ElevatedButton.styleFrom(
-                              minimumSize: Size(double.infinity, 48),
-                              elevation: 0,
-                              primary: Colors.green),
-                        ),
-                        SizedBox(
-                          height: 8,
-                        ),
-                        ElevatedButton(
-                          onPressed: () {},
-                          child: Text("View On All Projects"),
-                          style: ElevatedButton.styleFrom(
-                              minimumSize: Size(double.infinity, 48),
-                              elevation: 0,
-                              primary: Colors.green),
-                        ),
-                      ],
-                    ),
-                  )
-                ],
-              ))
+                      )
+                    ],
+                  ))
             ],
           ),
         ),
