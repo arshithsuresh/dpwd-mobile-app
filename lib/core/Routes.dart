@@ -1,4 +1,5 @@
 import 'package:dpwdapp/views/ImportWallet.dart';
+import 'package:dpwdapp/views/ProjectDetails.dart';
 import 'package:dpwdapp/views/Projects.dart';
 import 'package:dpwdapp/views/PublicUserDashboard.dart';
 import 'package:flutter/material.dart';
@@ -42,6 +43,12 @@ class AppRoutes {
       break;
 
       case ROUTE_ViewProjects:
+        return MaterialPageRoute(
+          settings: settings,
+          builder: (_) => ProjectDetails(),
+        );
+      break;
+      case ROUTE_ViewComplaints:
         return MaterialPageRoute(
           settings: settings,
           builder: (_) => Projects(),

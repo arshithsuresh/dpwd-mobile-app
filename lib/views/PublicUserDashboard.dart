@@ -66,7 +66,9 @@ class PublicUserDashboard extends StatelessWidget {
                       children: [
                         PrimaryButton(
                           title: "View My Complaints",
-                          onPressed: () {},
+                          onPressed: () {
+                            Navigator.pushNamed(context, AppRoutes.ROUTE_ViewComplaints);
+                          },
                         ),
                         SizedBox(
                           height: 8,
