@@ -1,9 +1,11 @@
 import 'package:dpwdapp/core/Routes.dart';
 import 'package:flutter/material.dart';
 
-class LoginPage extends StatelessWidget {
+class LoginPage extends StatelessWidget {  
+
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
       backgroundColor: Color.fromRGBO(234, 234, 234, 1),
       body: Container(
@@ -69,7 +71,6 @@ class LoginPage extends StatelessWidget {
                 SizedBox(height: 16),
                 ElevatedButton(
                   onPressed: () {
-                    Navigator.pushNamed(context, AppRoutes.ROUTE_Dashboard);
                   },
                   child: Text("LOGIN"),
                   style: ElevatedButton.styleFrom(

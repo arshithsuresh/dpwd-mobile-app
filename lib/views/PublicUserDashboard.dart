@@ -1,10 +1,14 @@
+import 'package:dpwdapp/api/ProjectAPI.dart';
 import 'package:dpwdapp/components/buttons/PrimaryButton.dart';
 import 'package:dpwdapp/core/Routes.dart';
+import 'package:dpwdapp/state/user/UserProvider.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class PublicUserDashboard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    
     return Scaffold(
       floatingActionButton: FloatingActionButton(
         backgroundColor: Colors.white,
@@ -41,7 +45,7 @@ class PublicUserDashboard extends StatelessWidget {
                           TextStyle(fontSize: 14, fontWeight: FontWeight.w400),
                     ),
                     Text(
-                      "Username",
+                      Provider.of<UserProvider>(context,listen: false).curUser.name,
                       style:
                           TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                     ),
@@ -104,14 +108,7 @@ class PublicUserDashboard extends StatelessWidget {
                                 Navigator.pushNamed(context, AppRoutes.ROUTE_ViewProjects);
                               },
                               title: "View On Going Projects",
-                            ),
-                            SizedBox(
-                              height: 8,
-                            ),
-                            PrimaryButton(
-                              onPressed: () {},
-                              title: "View Upcoming Projects",
-                            ),
+                            ),                                                    
                             SizedBox(
                               height: 8,
                             ),
@@ -138,14 +135,7 @@ class PublicUserDashboard extends StatelessWidget {
                           color: Colors.white,
                         ),
                         child: Column(
-                          children: [
-                            PrimaryButton(
-                              onPressed: () {},
-                              title: "View OnComing Projects",
-                            ),
-                            SizedBox(
-                              height: 8,
-                            ),
+                          children: [                            
                             PrimaryButton(
                               onPressed: () {},
                               title: "View On Going Projects",

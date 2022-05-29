@@ -94,18 +94,7 @@ class GovtOfficialDashboard extends StatelessWidget {
                               minimumSize: Size(double.infinity, 48),
                               elevation: 0,
                               primary: Colors.green),
-                        ),
-                        SizedBox(
-                          height: 8,
-                        ),
-                        ElevatedButton(
-                          onPressed: () {},
-                          child: Text("View Upcoming Projects"),
-                          style: ElevatedButton.styleFrom(
-                              minimumSize: Size(double.infinity, 48),
-                              elevation: 0,
-                              primary: Colors.green),
-                        ),
+                        ),                        
                         SizedBox(
                           height: 8,
                         ),
@@ -153,6 +142,17 @@ class GovtOfficialDashboard extends StatelessWidget {
                         ElevatedButton(
                           onPressed: () {},
                           child: Text("Update Projects"),
+                          style: ElevatedButton.styleFrom(
+                              minimumSize: Size(double.infinity, 48),
+                              elevation: 0,
+                              primary: Colors.green),
+                        ),
+                        SizedBox(
+                          height: 8,
+                        ),
+                        ElevatedButton(
+                          onPressed: () {},
+                          child: Text("Sign Projects"),
                           style: ElevatedButton.styleFrom(
                               minimumSize: Size(double.infinity, 48),
                               elevation: 0,
