@@ -11,7 +11,17 @@ class Project {
   double budget;
   String contractorID;
   List<String> signatures;
-  List<ProjectUpdate> updates;
+  List<ProjectUpdate> updates=[];
+
+  double _status = 0;
+
+  getStatus(){
+    return _status/100.0;
+  }
+
+  calculateStatus(){
+    updates.forEach((element) =>_status+=element.status);
+  }
 
   Project(
       {this.bid,
@@ -23,7 +33,10 @@ class Project {
       this.budget,
       this.contractorID,
       this.signatures,
-      this.updates});
+      this.updates}){
+
+        calculateStatus();
+      }
 
   factory Project.fromJson(Map<String, dynamic> data) {
    

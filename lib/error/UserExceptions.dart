@@ -2,7 +2,7 @@
 class InvalidUserException implements Exception{
 
   String error = "The user is invalid";
-  InvalidUserException(this.error);
+  InvalidUserException();
 
   @override
   String toString() {   
@@ -12,7 +12,7 @@ class InvalidUserException implements Exception{
 
 class AccessTokenExpired implements Exception{
   String error = "User token has Expired. Login Again";
-  AccessTokenExpired(this.error);
+  AccessTokenExpired();
 
   @override
   String toString() {   
@@ -22,7 +22,7 @@ class AccessTokenExpired implements Exception{
 
 class UserNotVerified implements Exception{
   String error = "User has not completed the verficiation process.";
-  UserNotVerified(this.error);
+  UserNotVerified();
 
   @override
   String toString() {   
@@ -32,7 +32,7 @@ class UserNotVerified implements Exception{
 
 class UnAuthorizedUser implements Exception{
   String error = "User is not authoized to perform this function!";
-  UnAuthorizedUser(this.error);
+  UnAuthorizedUser();
 
   @override
   String toString() {   

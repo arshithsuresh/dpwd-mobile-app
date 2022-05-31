@@ -1,9 +1,16 @@
 import 'package:dpwdapp/components/cards/ProjectCard.dart';
+import 'package:dpwdapp/state/project/ProjectProvider.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class Projects extends StatelessWidget {
+  
+  refreshContent(context) =>
+      Provider.of<ProjectsProvider>(context, listen: false)
+          .initializeAllProjects();
   @override
   Widget build(BuildContext context) {
+  
     return Scaffold(
       floatingActionButton: FloatingActionButton(
         backgroundColor: Colors.white,
@@ -12,7 +19,9 @@ class Projects extends StatelessWidget {
           Icons.arrow_back,
           color: Colors.black,
         ),
-        onPressed: () {},
+        onPressed: () {
+          Navigator.pop(context);
+        },
       ),
       backgroundColor: Color.fromRGBO(234, 234, 234, 1),
       floatingActionButtonLocation: FloatingActionButtonLocation.startTop,
@@ -29,19 +38,35 @@ class Projects extends StatelessWidget {
                     "All Projects",
                     style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
                   ),
+                  IconButton(
+                      onPressed: () {
+                        refreshContent(context);
+                      },
+                      icon: Icon(Icons.refresh),
+                      iconSize: 14,
+                      padding: EdgeInsets.zero,
+                      constraints: BoxConstraints.tightFor()),
                   SizedBox(
-                    height: 12,
+                    height: 1,
                   ),
                 ],
               ),
             ),
-            Container(
-                child: Column(children: [
-              ProjectCard(),
-              ProjectCard(),
-              ProjectCard(),
-              ProjectCard(),
-            ]))
+            Consumer<ProjectsProvider>(builder: ((context, datas, child) {
+              if (datas.getAllProjects().length > 0)
+                return Container(
+                    child: Column(
+                        children: datas
+                            .getAllProjects()
+                            .map((data) => ProjectCard(
+                                  data: data,
+                                  clickable: true,
+                                ))
+                            .toList()));
+              else
+                refreshContent(context);
+              return Container();
+            }))
           ],
         ),
       )),

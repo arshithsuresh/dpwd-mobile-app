@@ -1,3 +1,4 @@
+import 'package:dpwdapp/core/Routes.dart';
 import 'package:flutter/material.dart';
 
 class GovtOfficialDashboard extends StatelessWidget {
@@ -58,7 +59,9 @@ class GovtOfficialDashboard extends StatelessWidget {
                     child: Column(
                       children: [
                         ElevatedButton(
-                          onPressed: () {},
+                          onPressed: () {
+                            Navigator.pushNamed(context, AppRoutes.ROUTE_ViewComplaints);
+                          },
                           child: Text("View Complaints"),
                           style: ElevatedButton.styleFrom(
                               minimumSize: Size(double.infinity, 48),
@@ -88,7 +91,9 @@ class GovtOfficialDashboard extends StatelessWidget {
                     child: Column(
                       children: [
                         ElevatedButton(
-                          onPressed: () {},
+                          onPressed: () {
+                            Navigator.pushNamed(context, AppRoutes.ROUTE_ViewProjects);
+                          },
                           child: Text("View On Going Projects"),
                           style: ElevatedButton.styleFrom(
                               minimumSize: Size(double.infinity, 48),
@@ -99,7 +104,9 @@ class GovtOfficialDashboard extends StatelessWidget {
                           height: 8,
                         ),
                         ElevatedButton(
-                          onPressed: () {},
+                          onPressed: () {
+                            Navigator.pushNamed(context, AppRoutes.ROUTE_ViewProjects);
+                          },
                           child: Text("View All Projects"),
                           style: ElevatedButton.styleFrom(
                               minimumSize: Size(double.infinity, 48),
@@ -129,7 +136,9 @@ class GovtOfficialDashboard extends StatelessWidget {
                     child: Column(
                       children: [
                         ElevatedButton(
-                          onPressed: () {},
+                          onPressed: () {
+                            Navigator.pushNamed(context, AppRoutes.ROUTE_CreateProject);
+                          },
                           child: Text("Create New Project"),
                           style: ElevatedButton.styleFrom(
                               minimumSize: Size(double.infinity, 48),

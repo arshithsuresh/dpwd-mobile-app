@@ -11,7 +11,7 @@ class ImportWallet extends StatelessWidget {
   final txtPasswordController = TextEditingController();
 
   ImportWallet() {
-    txtUsernameController.text = "testuser";
+    txtUsernameController.text = "govtorgadmin";
     txtPasswordController.text = "hashedpassword";
   }
 
@@ -98,6 +98,8 @@ class ImportWallet extends StatelessWidget {
                           password: txtPasswordController.text ).then((loggedin){
                             if(loggedin)
                               Navigator.pushNamed(context, AppRoutes.ROUTE_Dashboard);
+                            else
+                              ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Login Failed!")));
                           });
                     },
                     child: Text("LOGIN"),

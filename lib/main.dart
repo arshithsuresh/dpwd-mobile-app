@@ -1,4 +1,5 @@
 import 'package:dpwdapp/core/Routes.dart';
+import 'package:dpwdapp/state/project/ProjectProvider.dart';
 import 'package:dpwdapp/state/user/UserProvider.dart';
 import 'package:dpwdapp/views/ContractorDashboard.dart';
 import 'package:dpwdapp/views/GovtOfficialDashboard.dart';
@@ -11,7 +12,8 @@ import 'package:provider/provider.dart';
 void main() {
   runApp(
       MultiProvider(providers: [ 
-        ChangeNotifierProvider(create: (ctx)=> new UserProvider())
+        ChangeNotifierProvider(create: (ctx)=> new UserProvider()),
+        ChangeNotifierProvider(create: (ctx)=> new ProjectsProvider())
       ],
       child: MyApp(),
       )

@@ -1,3 +1,5 @@
+import 'dart:convert';
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:dio/dio.dart';
@@ -24,7 +26,7 @@ class HttpService {
   Future<Response> getRequest({String endpoint, Map<String,dynamic> params}) async {
     Response response;
     try {
-      response = await _dio.get(endpoint,queryParameters: params);
+      response = await _dio.get(_baseURL+endpoint,queryParameters: params);
     } on DioError catch (e) {
       print(e.message);
       throw Exception(e.message);
@@ -58,6 +60,12 @@ class LoggingInterceptior extends Interceptor{
     super.onRequest(options, handler);
   }
 
+  @override
+  void onError(DioError err, ErrorInterceptorHandler handler) {
+    // TODO: implement onError
+    print("ERR RESPONSE :: "+ json.encode(err.response.data).toString());
+    super.onError(err, handler);
+  }
   @override
   void onResponse(Response response, ResponseInterceptorHandler handler) {
     // TODO: implement onResponse
