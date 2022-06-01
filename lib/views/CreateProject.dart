@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:dpwdapp/api/ProjectAPI.dart';
 import 'package:dpwdapp/components/buttons/PrimaryButton.dart';
 import 'package:dpwdapp/core/Routes.dart';
@@ -9,10 +11,15 @@ import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:provider/provider.dart';
 
+import 'package:crypto/crypto.dart';
+
+
 class CreateProject extends StatelessWidget {
   CreateProject({Key key}) : super(key: key);
 
-  final TextEditingController txtBID = TextEditingController();
+  
+
+  final TextEditingController txtTitle = TextEditingController();
   final TextEditingController txtPID = TextEditingController();
   final TextEditingController txtSDate = TextEditingController();
   final TextEditingController txtApxEndDate = TextEditingController();
@@ -21,31 +28,47 @@ class CreateProject extends StatelessWidget {
   final TextEditingController txtDesc = TextEditingController();
   final TextEditingController txtContractorID = TextEditingController();
 
+  dummyProjectInfo(){
+    txtTitle.text = "CHNGR - TVLA Bypass";
+    txtPID.text = "PID0003341";
+    txtSDate.text = "12/03/2022";
+    txtApxEndDate.text = "30/12/2022";
+    txtBudget.text = "12";
+    txtDesc.text = "New bypass from chengannur to thiruvalla";
+    txtContractorID.text = "0x0001234";
+  }
+
   Future<bool> createProject(context) async {
 
-    if(txtBID.text.length<5 || txtPID.text.length<5 || txtSDate.text.length<4 || txtApxEndDate.text.length<4 ||
+    final txtBID = sha256.convert(utf8.encode(txtPID.text)).toString();
+
+    if(txtBID.length<5 || txtPID.text.length<5 || txtSDate.text.length<4 || txtApxEndDate.text.length<4 ||
         txtBudget.text.length<2 || txtDesc.text.length<10 || txtContractorID.text.length<5)
         {
           return false;
         }
 
     final projectData = Project(
-        bid: txtBID.text,
+        bid: txtBID,
         pid: txtPID.text,
         sDate: txtSDate.text,
         apxEndDate: txtApxEndDate.text,
         budget: double.parse(txtBudget.text),
         desc: txtDesc.text,
-        contractorID: txtContractorID.text);
+        contractorID: txtContractorID.text,
+        signatures: [],
+        name: txtTitle.text,
+        updates: []);
 
     final result =
-        await Provider.of<ProjectsProvider>(context).createProject(projectData);
+        await Provider.of<ProjectsProvider>(context, listen: false).createProject(projectData);
 
     return result;
   }
 
   @override
   Widget build(BuildContext context) {
+    dummyProjectInfo();
     return Scaffold(
         floatingActionButton: FloatingActionButton(
           backgroundColor: Colors.white,
@@ -83,9 +106,9 @@ class CreateProject extends StatelessWidget {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text("B Project ID"),
+                          Text("Project ID"),
                           TextField(
-                            controller: txtBID,
+                            controller: txtPID,
                             decoration: const InputDecoration(
                                 fillColor: Colors.white,
                                 filled: true,
@@ -97,9 +120,9 @@ class CreateProject extends StatelessWidget {
                                     ))),
                           ),
                           SizedBox(height: 8),
-                          Text("Project ID"),
+                          Text("Project Titile"),
                           TextField(
-                            controller: txtPID,
+                            controller: txtTitle,
                             decoration: const InputDecoration(
                                 fillColor: Colors.white,
                                 filled: true,
@@ -165,7 +188,7 @@ class CreateProject extends StatelessWidget {
                             ],
                           ),
                           SizedBox(height: 8),
-                          Text("Budget"),
+                          Text("Budget (in Cr.)"),
                           TextField(
                             controller: txtBudget,
                             keyboardType:
@@ -181,45 +204,45 @@ class CreateProject extends StatelessWidget {
                                     ))),
                           ),
                           SizedBox(height: 8),
-                          Row(
-                            mainAxisSize: MainAxisSize.max,
-                            children: [
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text("Region"),
-                                  Container(
-                                    width: 200,
-                                    child: TextField(
-                                      controller: txtRegion,
-                                      decoration: const InputDecoration(
-                                          fillColor: Colors.white,
-                                          filled: true,
-                                          border: OutlineInputBorder(
-                                              borderSide: BorderSide(
-                                                  width: 1,
-                                                  color: Colors.black),
-                                              borderRadius: BorderRadius.all(
-                                                Radius.circular(12),
-                                              ))),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              Container(
-                                  alignment: Alignment.bottomRight,
-                                  height: 60,
-                                  width: 60,
-                                  margin: EdgeInsets.only(left: 4),
-                                  child: ElevatedButton(
-                                    onPressed: () {},
-                                    child: Icon(Icons.location_pin),
-                                    style: ElevatedButton.styleFrom(
-                                        maximumSize: Size(60, 50),
-                                        minimumSize: Size(60, 50)),
-                                  ))
-                            ],
-                          ),
+                          // Row(
+                          //   mainAxisSize: MainAxisSize.max,
+                          //   children: [
+                          //     Column(
+                          //       crossAxisAlignment: CrossAxisAlignment.start,
+                          //       children: [
+                          //         Text("Region"),
+                          //         Container(
+                          //           width: 200,
+                          //           child: TextField(
+                          //             controller: txtRegion,
+                          //             decoration: const InputDecoration(
+                          //                 fillColor: Colors.white,
+                          //                 filled: true,
+                          //                 border: OutlineInputBorder(
+                          //                     borderSide: BorderSide(
+                          //                         width: 1,
+                          //                         color: Colors.black),
+                          //                     borderRadius: BorderRadius.all(
+                          //                       Radius.circular(12),
+                          //                     ))),
+                          //           ),
+                          //         ),
+                          //       ],
+                          //     ),
+                          //     Container(
+                          //         alignment: Alignment.bottomRight,
+                          //         height: 60,
+                          //         width: 60,
+                          //         margin: EdgeInsets.only(left: 4),
+                          //         child: ElevatedButton(
+                          //           onPressed: () {},
+                          //           child: Icon(Icons.location_pin),
+                          //           style: ElevatedButton.styleFrom(
+                          //               maximumSize: Size(60, 50),
+                          //               minimumSize: Size(60, 50)),
+                          //         ))
+                          //   ],
+                          // ),
                           SizedBox(height: 8),
                           Text("Description"),
                           TextField(
@@ -261,7 +284,7 @@ class CreateProject extends StatelessWidget {
                                             content: Text("Project Created!")));
                                     Future.delayed(
                                         Duration(seconds: 3),
-                                        () => Navigator.pushNamed(context,
+                                        () => Navigator.popAndPushNamed(context,
                                             AppRoutes.ROUTE_Dashboard));
                                   } else {
                                     ScaffoldMessenger.of(context).showSnackBar(

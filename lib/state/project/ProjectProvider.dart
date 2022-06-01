@@ -37,11 +37,12 @@ class ProjectsProvider extends ChangeNotifier {
 
     return null;
   }
-
+ 
   Future<bool> createProject(Project projectData) async {
     try {
       final result = await _projectAPI.createProject(
           project: projectData, projectID: projectData.bid);
+
       if (result == true) _projects.add(projectData);
       notifyListeners();
       return result;
@@ -77,6 +78,24 @@ class ProjectsProvider extends ChangeNotifier {
     }
 
     return null;
+  }
+
+  Future<bool> updateProjectStatus({update}) async {
+    try {
+      final result = await _projectAPI.updateProject(
+          projectID: selectedProject.bid, update: update);
+
+      if (result == true) {
+        selectedProject =
+            await _projectAPI.getProjectByID(projectID: selectedProject.bid);
+        notifyListeners();
+        return true;
+      }
+    } on UnAuthorizedUser catch (e) {
+      print(e.toString());
+    }
+
+    return false;
   }
 
   Future<bool> signCurrentProjectUpdate({updateOrder}) async {

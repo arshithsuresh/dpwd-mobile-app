@@ -21,16 +21,35 @@ class ProjectDetails extends StatelessWidget {
     UserProvider userProvider = Provider.of<UserProvider>(context);
 
     return Scaffold(
-      floatingActionButton: FloatingActionButton(
-        backgroundColor: Colors.white,
-        elevation: 0,
-        child: Icon(
-          Icons.arrow_back,
-          color: Colors.black,
-        ),
-        onPressed: () {
-          Navigator.pop(context);
-        },
+      floatingActionButton: Row(
+        children: [
+          FloatingActionButton(
+            backgroundColor: Colors.white,
+            elevation: 0,
+            child: Icon(
+              Icons.arrow_back,
+              color: Colors.black,
+            ),
+            onPressed: () {
+              Navigator.pop(context);
+            },
+          ),
+          SizedBox(width: 8,),
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              primary: Colors.green,
+              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(18))
+            ),
+            child: Text(
+              "Update",
+              style: TextStyle(color: Colors.white),
+            ),
+            onPressed: () {
+              Navigator.pushNamed(context, AppRoutes.ROUTE_UpdateProject);
+            },
+          ),
+        ],
       ),
       backgroundColor: Color.fromRGBO(234, 234, 234, 1),
       floatingActionButtonLocation: FloatingActionButtonLocation.startTop,
@@ -164,7 +183,7 @@ class ProjectDetails extends StatelessWidget {
                           children: data.updates
                               .asMap()
                               .entries
-                              .map((e) => UpdateCard(e.value, e.key))
+                              .map((e) => UpdateCard(e.value, e.key,interact: true,))
                               .toList(),
                         ),
                       )

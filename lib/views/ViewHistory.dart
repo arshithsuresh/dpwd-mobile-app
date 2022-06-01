@@ -8,8 +8,6 @@ import 'package:provider/provider.dart';
 class ViewHistory extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    Provider.of<ProjectsProvider>(context).getCurrentProjectHistory();
-
     return Scaffold(
         floatingActionButton: FloatingActionButton(
           backgroundColor: Colors.white,
@@ -44,6 +42,11 @@ class ViewHistory extends StatelessWidget {
                         style: TextStyle(
                             fontSize: 22, fontWeight: FontWeight.bold),
                       ),
+                      Text(
+                        "${value.selectedProject.desc}",
+                        style: TextStyle(
+                            fontSize: 16, fontWeight: FontWeight.w400),
+                      ),
                       SizedBox(
                         height: 1,
                       ),
@@ -65,9 +68,7 @@ class ViewHistory extends StatelessWidget {
                                   history.add(ProjectHistoryCard(project,timestamp));
                                 });
                                 return Column(
-                                children: history);
-                              
-
+                                children: history);        
                               }                              
                               else if(snapshot.connectionState == ConnectionState.waiting)
                               return CircularProgressIndicator();

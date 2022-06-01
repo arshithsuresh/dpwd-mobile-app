@@ -1,7 +1,13 @@
 import 'package:dpwdapp/components/cards/ComplaintCard.dart';
+import 'package:dpwdapp/state/complaints/ComplaintProvider.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class Complaints extends StatelessWidget {
+  refreshContent(context) =>
+      Provider.of<ComplaintProvider>(context, listen: false)
+          .initializeAllComplaints();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -12,7 +18,9 @@ class Complaints extends StatelessWidget {
           Icons.arrow_back,
           color: Colors.black,
         ),
-        onPressed: () {},
+        onPressed: () {
+          Navigator.pop(context);
+        },
       ),
       backgroundColor: Color.fromRGBO(234, 234, 234, 1),
       floatingActionButtonLocation: FloatingActionButtonLocation.startTop,
@@ -26,7 +34,7 @@ class Complaints extends StatelessWidget {
               child: Column(
                 children: [
                   Text(
-                    "All Projects",
+                    "All Complaints",
                     style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
                   ),
                   SizedBox(
@@ -35,13 +43,21 @@ class Complaints extends StatelessWidget {
                 ],
               ),
             ),
-            Container(
-                child: Column(children: [
-              ComplaintCard(),
-              ComplaintCard(),
-              ComplaintCard(),
-              ComplaintCard(),
-            ]))
+            Consumer<ComplaintProvider>(builder: ((context, datas, child) {
+              if (datas.getAllComplaints().length > 0)
+                return Container(
+                    child: Column(
+                        children: datas
+                            .getAllComplaints()
+                            .map((data) => ComplaintCard(
+                                  complaint: data,
+                                  clickable: true,
+                                ))
+                            .toList()));
+              else
+                refreshContent(context);
+              return Container();
+            })),
           ],
         ),
       )),

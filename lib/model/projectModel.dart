@@ -15,8 +15,20 @@ class Project {
 
   double _status = 0;
 
+  getBID(){
+    if(bid.length<16)
+    return bid;
+
+    final len= bid.length;
+    return bid.substring(0,12)+"...."+ bid.substring(len-6,len-1);
+  }
+
   getStatus(){
     return _status/100.0;
+  }
+
+  getStatusPercentage(){
+    return _status;
   }
 
   calculateStatus(){
@@ -34,7 +46,6 @@ class Project {
       this.contractorID,
       this.signatures,
       this.updates}){
-
         calculateStatus();
       }
 
@@ -42,8 +53,7 @@ class Project {
    
     List<ProjectUpdate> updates = data['updates']
         .map<ProjectUpdate>((dynamic update) => ProjectUpdate.fromJson(update))
-        .toList();
-        
+        .toList();    
     return Project(
         bid: data['bid'],
         pid: data['pid'],
@@ -51,7 +61,7 @@ class Project {
         desc: data['desc'],
         sDate: data['sDate'],
         apxEndDate: data['apxEndDate'],
-        budget: double.parse(data['budget']),
+        budget:   double.parse(data['budget'].toString()),
         contractorID: data['contractorID'],
         signatures: data['signatures'].map<String>((val)=>val.toString()).toList(),
         updates: updates);

@@ -74,8 +74,7 @@ class ProjectAPI {
     Map<String,Project> returnData = Map<String,Project>();
     
     if(result.statusCode == 200)
-    {
-      print("HGELLO ");
+    {      
       List<dynamic> historyData = result.data["data"];
       historyData.forEach((data){
         final timestamp = data["timestamp"]["seconds"]["low"].toString();
@@ -92,7 +91,7 @@ class ProjectAPI {
 
     return null;
   }
-  
+
   Future<bool> createProject({Project project, String projectID}) async
   {
     final projectData = {
@@ -102,12 +101,40 @@ class ProjectAPI {
         "desc":project.desc,
         "sDate":project.sDate,
         "apxEndDate":project.apxEndDate,
-        "budget":project.budget,
+        "budget":project.budget.toString(),
         "contractorID":project.contractorID,
         "signatures":[],
         "updates":[]
     };
-    final result = await _httpService.postRequest(endpoint: _baseEndpoint+"/create/"+projectID, data: projectData);
+    final result = await _httpService.postRequest(endpoint: _baseEndpoint+"create/"+projectID, data: projectData);
+
+    if(result.statusCode == 401)
+    {
+      throw UnAuthorizedUser();
+    }
+    else if(result.statusCode == 400)
+    {
+      throw InvalidDataFormat();
+    }
+    else if(result.statusCode == 200)
+    {
+      return true;
+    }
+    return false;
+  }
+  
+  Future<bool> updateProject({ProjectUpdate update, String projectID}) async
+  {
+    final projectData = {
+      "updateType" : update.updateType,
+      "title" : update.title,
+      "desc" : update.desc,
+      "date" : update.date,
+      "status" : update.status,
+      "signatures":[]
+    };
+
+    final result = await _httpService.postRequest(endpoint: _baseEndpoint+projectID+"/update", data: projectData);
 
     if(result.statusCode == 401)
     {

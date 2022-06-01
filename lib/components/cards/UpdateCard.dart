@@ -10,9 +10,11 @@ import 'package:provider/provider.dart';
 class UpdateCard extends StatelessWidget {
   ProjectUpdate _data;
   int _index = -1;
-  UpdateCard(ProjectUpdate data, int index) {
+  bool _interact;
+  UpdateCard(ProjectUpdate data, int index, {bool interact = true}) {
     this._data = data;
     this._index = index;
+    this._interact = interact;
   }
 
   @override
@@ -86,7 +88,7 @@ class UpdateCard extends StatelessWidget {
               SizedBox(
                 width: 4,
               ),
-              if (!userProvider.isPublicUser() && userProvider.isVerifiedUser())
+              if (!userProvider.isPublicUser() && userProvider.isVerifiedUser() && _interact)
                 ElevatedButton(
                     style: ElevatedButton.styleFrom(
                         elevation: 0,

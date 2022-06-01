@@ -46,7 +46,7 @@ class ProjectCard extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                data.pid +" | " + data.bid,
+                data.pid +" | " + data.getBID(),
                 style: TextStyle(fontSize: 14),
               ),
               Row(
@@ -66,9 +66,12 @@ class ProjectCard extends StatelessWidget {
                           ),
                         ),
                       ),
-                      Text(
-                        _wrap? data.desc.substring(0,20):data.desc,
-                        style: TextStyle(fontSize: 14),
+                      Container(
+                        width: 240,
+                        child: Text(
+                          _wrap? data.desc.substring(0,20):data.desc,
+                          style: TextStyle(fontSize: 14),
+                        ),
                       )
                     ],
                   ),
