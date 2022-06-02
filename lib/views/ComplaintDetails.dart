@@ -27,7 +27,7 @@ class ComplaintDetails extends StatelessWidget {
               content: Text(message),
               actions: [
                 ElevatedButton(
-                  style: ElevatedButton.styleFrom(primary: Colors.green),
+                    style: ElevatedButton.styleFrom(primary: Colors.green),
                     onPressed: () => action().then((value) {
                           if (value)
                             showSnackbar(
@@ -40,8 +40,9 @@ class ComplaintDetails extends StatelessWidget {
                         }),
                     child: Text("Yes")),
                 ElevatedButton(
-                  style: ElevatedButton.styleFrom(primary: Colors.grey),
-                    onPressed: () => Navigator.pop(context), child: Text("No"))
+                    style: ElevatedButton.styleFrom(primary: Colors.grey),
+                    onPressed: () => Navigator.pop(context),
+                    child: Text("No"))
               ],
             ));
   }
@@ -325,6 +326,8 @@ class ComplaintDetails extends StatelessWidget {
                   alignment: WrapAlignment.center,
                   spacing: 4,
                   children: [
+                    if (userProvider.isGovtUser() ||
+                        userProvider.isContractorUser())
                     ElevatedButton(
                         style: ElevatedButton.styleFrom(
                             elevation: 0,
@@ -340,51 +343,55 @@ class ComplaintDetails extends StatelessWidget {
                                   .updateComplaintStatusPending);
                         },
                         child: Text("Flag Pending Verification")),
-                    ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                            elevation: 0,
-                            primary: Colors.green,
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(18))),
-                        onPressed: () {
-                          showActionConfimation(
-                              context: context,
-                              message:
-                                  "Are you sure you want to flag this complaint as Verified?",
-                              action: complaintProvider
-                                  .updateComplaintStatusVerified);
-                        },
-                        child: Text("Flag Verified")),
-                    ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                            elevation: 0,
-                            primary: Colors.green,
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(18))),
-                        onPressed: () {
-                          showActionConfimation(
-                              context: context,
-                              message:
-                                  "Are you sure you want to flag this complaint as Pending Verification?",
-                              action: complaintProvider
-                                  .updateComplaintStatusResolved);
-                        },
-                        child: Text("Flag Resolved")),
-                    ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                            elevation: 0,
-                            primary: Colors.grey,
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(18))),
-                        onPressed: () {
-                          showActionConfimation(
-                              context: context,
-                              message:
-                                  "Are you sure you want to flag this complaint as Pending Verification?",
-                              action: complaintProvider
-                                  .updateComplaintStatusInvalid);
-                        },
-                        child: Text("Flag Invalid")),
+                    if (userProvider.isGovtUser() ||
+                        userProvider.isContractorUser())
+                      ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                              elevation: 0,
+                              primary: Colors.green,
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(18))),
+                          onPressed: () {
+                            showActionConfimation(
+                                context: context,
+                                message:
+                                    "Are you sure you want to flag this complaint as Verified?",
+                                action: complaintProvider
+                                    .updateComplaintStatusVerified);
+                          },
+                          child: Text("Flag Verified")),
+                    if (userProvider.isGovtUser())
+                      ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                              elevation: 0,
+                              primary: Colors.green,
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(18))),
+                          onPressed: () {
+                            showActionConfimation(
+                                context: context,
+                                message:
+                                    "Are you sure you want to flag this complaint as Pending Verification?",
+                                action: complaintProvider
+                                    .updateComplaintStatusResolved);
+                          },
+                          child: Text("Flag Resolved")),
+                    if (userProvider.isGovtUser())
+                      ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                              elevation: 0,
+                              primary: Colors.grey,
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(18))),
+                          onPressed: () {
+                            showActionConfimation(
+                                context: context,
+                                message:
+                                    "Are you sure you want to flag this complaint as Pending Verification?",
+                                action: complaintProvider
+                                    .updateComplaintStatusInvalid);
+                          },
+                          child: Text("Flag Invalid")),
                     ElevatedButton(
                         style: ElevatedButton.styleFrom(
                             elevation: 0,

@@ -5,7 +5,6 @@ class GovtOfficialDashboard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      
       backgroundColor: Color.fromRGBO(234, 234, 234, 1),
       floatingActionButtonLocation: FloatingActionButtonLocation.startTop,
       body: SingleChildScrollView(
@@ -25,7 +24,7 @@ class GovtOfficialDashboard extends StatelessWidget {
                     ),
                     SizedBox(
                       height: 12,
-                    ),                    
+                    ),
                     Text(
                       "Government Portal",
                       style:
@@ -52,7 +51,8 @@ class GovtOfficialDashboard extends StatelessWidget {
                       children: [
                         ElevatedButton(
                           onPressed: () {
-                            Navigator.pushNamed(context, AppRoutes.ROUTE_ViewComplaints);
+                            Navigator.pushNamed(
+                                context, AppRoutes.ROUTE_ViewComplaints);
                           },
                           child: Text("View Complaints"),
                           style: ElevatedButton.styleFrom(
@@ -60,46 +60,15 @@ class GovtOfficialDashboard extends StatelessWidget {
                               elevation: 0,
                               primary: Colors.green),
                         ),
-                      ],
-                    ),
-                  )
-                ],
-              )),
-              Container(
-                margin: EdgeInsets.only(top:16),
-                  child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text("Projects"),
-                  SizedBox(
-                    height: 4,
-                  ),
-                  Container(
-                    padding: EdgeInsets.all(12),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(8),
-                      color: Colors.white,
-                    ),
-                    child: Column(
-                      children: [
-                        ElevatedButton(
-                          onPressed: () {
-                            Navigator.pushNamed(context, AppRoutes.ROUTE_ViewProjects);
-                          },
-                          child: Text("View On Going Projects"),
-                          style: ElevatedButton.styleFrom(
-                              minimumSize: Size(double.infinity, 48),
-                              elevation: 0,
-                              primary: Colors.green),
-                        ),                        
                         SizedBox(
                           height: 8,
                         ),
                         ElevatedButton(
                           onPressed: () {
-                            Navigator.pushNamed(context, AppRoutes.ROUTE_ViewProjects);
+                            Navigator.pushNamed(
+                                context, AppRoutes.ROUTE_CreateComplaint);
                           },
-                          child: Text("View All Projects"),
+                          child: Text("New Complaint"),
                           style: ElevatedButton.styleFrom(
                               minimumSize: Size(double.infinity, 48),
                               elevation: 0,
@@ -111,59 +80,107 @@ class GovtOfficialDashboard extends StatelessWidget {
                 ],
               )),
               Container(
-                margin: EdgeInsets.only(top:16),
+                  margin: EdgeInsets.only(top: 16),
                   child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text("Actions"),
-                  SizedBox(
-                    height: 4,
-                  ),
-                  Container(
-                    padding: EdgeInsets.all(12),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(8),
-                      color: Colors.white,
-                    ),
-                    child: Column(
-                      children: [
-                        ElevatedButton(
-                          onPressed: () {
-                            Navigator.pushNamed(context, AppRoutes.ROUTE_CreateProject);
-                          },
-                          child: Text("Create New Project"),
-                          style: ElevatedButton.styleFrom(
-                              minimumSize: Size(double.infinity, 48),
-                              elevation: 0,
-                              primary: Colors.green),
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text("Projects"),
+                      SizedBox(
+                        height: 4,
+                      ),
+                      Container(
+                        padding: EdgeInsets.all(12),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(8),
+                          color: Colors.white,
                         ),
-                        SizedBox(
-                          height: 8,
+                        child: Column(
+                          children: [
+                            ElevatedButton(
+                              onPressed: () {
+                                Navigator.pushNamed(
+                                    context, AppRoutes.ROUTE_ViewProjects);
+                              },
+                              child: Text("View On Going Projects"),
+                              style: ElevatedButton.styleFrom(
+                                  minimumSize: Size(double.infinity, 48),
+                                  elevation: 0,
+                                  primary: Colors.green),
+                            ),
+                            SizedBox(
+                              height: 8,
+                            ),
+                            ElevatedButton(
+                              onPressed: () {
+                                Navigator.pushNamed(
+                                    context, AppRoutes.ROUTE_ViewProjects);
+                              },
+                              child: Text("View All Projects"),
+                              style: ElevatedButton.styleFrom(
+                                  minimumSize: Size(double.infinity, 48),
+                                  elevation: 0,
+                                  primary: Colors.green),
+                            ),
+                          ],
                         ),
-                        ElevatedButton(
-                          onPressed: () {},
-                          child: Text("Update Projects"),
-                          style: ElevatedButton.styleFrom(
-                              minimumSize: Size(double.infinity, 48),
-                              elevation: 0,
-                              primary: Colors.green),
+                      )
+                    ],
+                  )),
+              Container(
+                  margin: EdgeInsets.only(top: 16),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text("Actions"),
+                      SizedBox(
+                        height: 4,
+                      ),
+                      Container(
+                        padding: EdgeInsets.all(12),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(8),
+                          color: Colors.white,
                         ),
-                        SizedBox(
-                          height: 8,
+                        child: Column(
+                          children: [
+                            ElevatedButton(
+                              onPressed: () {
+                                Navigator.pushNamed(
+                                    context, AppRoutes.ROUTE_CreateProject);
+                              },
+                              child: Text("Create New Project"),
+                              style: ElevatedButton.styleFrom(
+                                  minimumSize: Size(double.infinity, 48),
+                                  elevation: 0,
+                                  primary: Colors.green),
+                            ),
+                            SizedBox(
+                              height: 8,
+                            ),
+                            ElevatedButton(
+                              onPressed: () {},
+                              child: Text("Manage Users"),
+                              style: ElevatedButton.styleFrom(
+                                  minimumSize: Size(double.infinity, 48),
+                                  elevation: 0,
+                                  primary: Colors.green),
+                            ),
+                            SizedBox(
+                              height: 8,
+                            ),
+                            ElevatedButton(
+                              onPressed: () {},
+                              child: Text("Sign Projects"),
+                              style: ElevatedButton.styleFrom(
+                                  minimumSize: Size(double.infinity, 48),
+                                  elevation: 0,
+                                  primary: Colors.green),
+                            ),
+                          ],
                         ),
-                        ElevatedButton(
-                          onPressed: () {},
-                          child: Text("Sign Projects"),
-                          style: ElevatedButton.styleFrom(
-                              minimumSize: Size(double.infinity, 48),
-                              elevation: 0,
-                              primary: Colors.green),
-                        ),
-                      ],
-                    ),
-                  )
-                ],
-              ))
+                      )
+                    ],
+                  ))
             ],
           ),
         ),

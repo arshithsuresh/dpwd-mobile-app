@@ -1,6 +1,7 @@
 import 'package:dpwdapp/views/ComplaintDetails.dart';
 import 'package:dpwdapp/views/Complaints.dart';
 import 'package:dpwdapp/views/ContractorDashboard.dart';
+import 'package:dpwdapp/views/CreateComplaint.dart';
 import 'package:dpwdapp/views/CreateProject.dart';
 import 'package:dpwdapp/views/Dashboard.dart';
 import 'package:dpwdapp/views/GovtOfficialDashboard.dart';
@@ -43,6 +44,13 @@ class AppRoutes {
         return MaterialPageRoute(
           settings: settings,
           builder: (_) => CreateProject(),
+        );
+        break;
+
+      case ROUTE_CreateComplaint:
+        return MaterialPageRoute(
+          settings: settings,
+          builder: (_) => CreateComplaint(),
         );
         break;
 
