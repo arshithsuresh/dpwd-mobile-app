@@ -37,6 +37,14 @@ class Complaints extends StatelessWidget {
                     "All Complaints",
                     style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
                   ),
+                  IconButton(
+                      onPressed: () {
+                        refreshContent(context);
+                      },
+                      icon: Icon(Icons.refresh),
+                      iconSize: 14,
+                      padding: EdgeInsets.zero,
+                      constraints: BoxConstraints.tightFor()),
                   SizedBox(
                     height: 12,
                   ),

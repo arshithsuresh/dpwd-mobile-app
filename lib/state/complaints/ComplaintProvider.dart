@@ -10,6 +10,7 @@ import 'package:flutter/foundation.dart';
 class ComplaintProvider extends ChangeNotifier {
   List<Complaint> _complaints = [];
   Complaint selectedComplaint;
+  int _selectedComplaint;
   ComplaintAPI _complaintAPI = ComplaintAPI();
 
   selectComplaint(Complaint complaint) {
@@ -67,6 +68,17 @@ class ComplaintProvider extends ChangeNotifier {
 
     return false;
   }
+  Future<bool> upVoteCurrentComplaint() async {
+    try {
+      final result =
+          await _complaintAPI.upVoteComplaint(complaintID: selectedComplaint.bid);
+      if (result) {
+        return true;
+      }
+    } on UnAuthorizedUser catch (e) {}
+
+    return false;
+  }
 
   Future<Map<String, Complaint>> getCurrentComplaintHistory() async {
     try {
@@ -82,7 +94,7 @@ class ComplaintProvider extends ChangeNotifier {
     return null;
   }
 
-  Future<bool> updateComplaintStatusPending({update}) async {
+  Future<bool> updateComplaintStatusPending() async {
     try {
       final result = await _complaintAPI.setComplaintStatusPending(
           complaintID: selectedComplaint.bid);
@@ -100,7 +112,7 @@ class ComplaintProvider extends ChangeNotifier {
     return false;
   }
 
-  Future<bool> updateComplaintStatusVerified({update}) async {
+  Future<bool> updateComplaintStatusVerified() async {
     try {
       final result = await _complaintAPI.setComplaintStatusVerified(
           complaintID: selectedComplaint.bid);
@@ -118,7 +130,7 @@ class ComplaintProvider extends ChangeNotifier {
     return false;
   }
 
-  Future<bool> updateComplaintStatusInvalid({update}) async {
+  Future<bool> updateComplaintStatusInvalid() async {
     try {
       final result = await _complaintAPI.setComplaintStatusInvalid(
           complaintID: selectedComplaint.bid);
@@ -136,7 +148,7 @@ class ComplaintProvider extends ChangeNotifier {
     return false;
   }
 
-  Future<bool> updateComplaintStatusResolved({update}) async {
+  Future<bool> updateComplaintStatusResolved() async {
     try {
       final result = await _complaintAPI.setComplaintStatusResolved(
           complaintID: selectedComplaint.bid);

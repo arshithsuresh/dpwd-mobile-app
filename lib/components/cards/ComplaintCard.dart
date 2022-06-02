@@ -17,6 +17,11 @@ class ComplaintCard extends StatelessWidget {
     this._clickable = clickable;
   }
 
+  showSnackbar({context, String message}) {
+    ScaffoldMessenger.of(context)
+        .showSnackBar(SnackBar(content: Text(message)));
+  }
+
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -126,7 +131,42 @@ class ComplaintCard extends StatelessWidget {
                           primary: Colors.blue,
                           shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(18))),
-                      onPressed: () {},
+                      onPressed: () {
+                        showDialog(
+                              context: context,
+                              builder: (context) => AlertDialog(
+                                    title: Text("Upvote Complaint?"),
+                                    content: Text(
+                                        "Are you sure you want to upvote this complaint?"),
+                                    actions: [
+                                      ElevatedButton(
+                                          style: ElevatedButton.styleFrom(
+                                              primary: Colors.green),
+                                          onPressed: () =>  Provider.of<ComplaintProvider>(context, listen: false)
+                                                  .upVoteCurrentComplaint()
+                                                  .then((value) {
+                                                if (value)
+                                                  showSnackbar(
+                                                      context: context,
+                                                      message:
+                                                          "Operation Successfull");
+                                                else
+                                                  showSnackbar(
+                                                      context: context,
+                                                      message:
+                                                          "Operation Failed!");
+                                                Navigator.pop(context);
+                                              }),
+                                          child: Text("Yes")),
+                                      ElevatedButton(
+                                          style: ElevatedButton.styleFrom(
+                                              primary: Colors.grey),
+                                          onPressed: () =>
+                                              Navigator.pop(context),
+                                          child: Text("No"))
+                                    ],
+                                  ));
+                      },
                       child: Text(
                         "Up Vote ${data.getNumberOfUpVotes()}",
                         style: TextStyle(fontSize: 11),

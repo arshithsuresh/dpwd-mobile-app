@@ -1,6 +1,7 @@
 import 'package:dpwdapp/components/cards/ComplaintCard.dart';
 import 'package:dpwdapp/components/cards/ProjectCard.dart';
 import 'package:dpwdapp/components/cards/UpdateCard.dart';
+import 'package:dpwdapp/constants/constants.dart';
 import 'package:dpwdapp/core/Routes.dart';
 import 'package:dpwdapp/model/complaintModel.dart';
 import 'package:dpwdapp/model/projectModel.dart';
@@ -8,6 +9,8 @@ import 'package:dpwdapp/state/complaints/ComplaintProvider.dart';
 import 'package:dpwdapp/state/project/ProjectProvider.dart';
 import 'package:dpwdapp/state/user/UserProvider.dart';
 import 'package:flutter/material.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:location/location.dart';
 import 'package:provider/provider.dart';
 
 class ComplaintDetails extends StatelessWidget {
@@ -16,11 +19,38 @@ class ComplaintDetails extends StatelessWidget {
         .showSnackBar(SnackBar(content: Text(message)));
   }
 
+  showActionConfimation({BuildContext context, String message, action}) {
+    return showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+              title: Text("Confirm Action"),
+              content: Text(message),
+              actions: [
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(primary: Colors.green),
+                    onPressed: () => action().then((value) {
+                          if (value)
+                            showSnackbar(
+                                context: context,
+                                message: "Operation Successfull");
+                          else
+                            showSnackbar(
+                                context: context, message: "Operation Failed!");
+                          Navigator.pop(context);
+                        }),
+                    child: Text("Yes")),
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(primary: Colors.grey),
+                    onPressed: () => Navigator.pop(context), child: Text("No"))
+              ],
+            ));
+  }
+
   @override
   Widget build(BuildContext context) {
-    ComplaintProvider projectsProvider =
+    ComplaintProvider complaintProvider =
         Provider.of<ComplaintProvider>(context);
-    Complaint data = projectsProvider.selectedComplaint;
+    Complaint data = complaintProvider.selectedComplaint;
     UserProvider userProvider = Provider.of<UserProvider>(context);
 
     return Scaffold(
@@ -63,14 +93,14 @@ class ComplaintDetails extends StatelessWidget {
                             showDialog(
                                 context: context,
                                 builder: (context) => AlertDialog(
-                                      title: Text("Signing Complaint Update"),
+                                      title: Text("Signing Complaint"),
                                       content: Text(
-                                          "Are you sure you want to sign this update?"),
+                                          "Are you sure you want to sign this complaint?"),
                                       actions: [
                                         ElevatedButton(
                                             style: ElevatedButton.styleFrom(
                                                 primary: Colors.green),
-                                            onPressed: () => projectsProvider
+                                            onPressed: () => complaintProvider
                                                     .signCurrentComplaint()
                                                     .then((value) {
                                                   if (value)
@@ -249,6 +279,17 @@ class ComplaintDetails extends StatelessWidget {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
+                            Text("Status"),
+                            Text(ComplaintStatus[data.status],
+                                style: TextStyle(fontWeight: FontWeight.bold))
+                          ],
+                        ),
+                        SizedBox(
+                          height: 4,
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
                             Text("Type"),
                             Text(data.type,
                                 style: TextStyle(fontWeight: FontWeight.bold))
@@ -290,7 +331,14 @@ class ComplaintDetails extends StatelessWidget {
                             primary: Colors.orangeAccent,
                             shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(18))),
-                        onPressed: () {},
+                        onPressed: () {
+                          showActionConfimation(
+                              context: context,
+                              message:
+                                  "Are you sure you want to flag this complaint as Pending Verification?",
+                              action: complaintProvider
+                                  .updateComplaintStatusPending);
+                        },
                         child: Text("Flag Pending Verification")),
                     ElevatedButton(
                         style: ElevatedButton.styleFrom(
@@ -298,7 +346,14 @@ class ComplaintDetails extends StatelessWidget {
                             primary: Colors.green,
                             shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(18))),
-                        onPressed: () {},
+                        onPressed: () {
+                          showActionConfimation(
+                              context: context,
+                              message:
+                                  "Are you sure you want to flag this complaint as Verified?",
+                              action: complaintProvider
+                                  .updateComplaintStatusVerified);
+                        },
                         child: Text("Flag Verified")),
                     ElevatedButton(
                         style: ElevatedButton.styleFrom(
@@ -306,7 +361,14 @@ class ComplaintDetails extends StatelessWidget {
                             primary: Colors.green,
                             shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(18))),
-                        onPressed: () {},
+                        onPressed: () {
+                          showActionConfimation(
+                              context: context,
+                              message:
+                                  "Are you sure you want to flag this complaint as Pending Verification?",
+                              action: complaintProvider
+                                  .updateComplaintStatusResolved);
+                        },
                         child: Text("Flag Resolved")),
                     ElevatedButton(
                         style: ElevatedButton.styleFrom(
@@ -314,7 +376,14 @@ class ComplaintDetails extends StatelessWidget {
                             primary: Colors.grey,
                             shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(18))),
-                        onPressed: () {},
+                        onPressed: () {
+                          showActionConfimation(
+                              context: context,
+                              message:
+                                  "Are you sure you want to flag this complaint as Pending Verification?",
+                              action: complaintProvider
+                                  .updateComplaintStatusInvalid);
+                        },
                         child: Text("Flag Invalid")),
                     ElevatedButton(
                         style: ElevatedButton.styleFrom(
@@ -322,17 +391,57 @@ class ComplaintDetails extends StatelessWidget {
                             primary: Colors.blue,
                             shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(18))),
-                        onPressed: () {},
+                        onPressed: () {
+                          Navigator.pushNamed(
+                              context, AppRoutes.ROUTE_ViewOnMap,
+                              arguments:
+                                  LatLng(data.location.lat, data.location.lng));
+                        },
                         child: Text("Show on Map")),
-                        ElevatedButton(
+                    ElevatedButton(
                         style: ElevatedButton.styleFrom(
                             elevation: 0,
                             primary: Colors.blue,
                             shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(18))),
-                        onPressed: () {},
+                        onPressed: () {
+                          showDialog(
+                              context: context,
+                              builder: (context) => AlertDialog(
+                                    title: Text("Upvote Complaint"),
+                                    content: Text(
+                                        "Are you sure you want to upvote this complaint?"),
+                                    actions: [
+                                      ElevatedButton(
+                                          style: ElevatedButton.styleFrom(
+                                              primary: Colors.green),
+                                          onPressed: () => complaintProvider
+                                                  .upVoteCurrentComplaint()
+                                                  .then((value) {
+                                                if (value)
+                                                  showSnackbar(
+                                                      context: context,
+                                                      message:
+                                                          "Operation Successfull");
+                                                else
+                                                  showSnackbar(
+                                                      context: context,
+                                                      message:
+                                                          "Operation Failed!");
+                                                Navigator.pop(context);
+                                              }),
+                                          child: Text("Yes")),
+                                      ElevatedButton(
+                                          style: ElevatedButton.styleFrom(
+                                              primary: Colors.grey),
+                                          onPressed: () =>
+                                              Navigator.pop(context),
+                                          child: Text("No"))
+                                    ],
+                                  ));
+                        },
                         child: Text("Up Vote")),
-                        ElevatedButton(
+                    ElevatedButton(
                         style: ElevatedButton.styleFrom(
                             elevation: 0,
                             primary: Colors.blue,

@@ -10,6 +10,7 @@ import 'package:dpwdapp/views/Projects.dart';
 import 'package:dpwdapp/views/PublicUserDashboard.dart';
 import 'package:dpwdapp/views/UpdateProject.dart';
 import 'package:dpwdapp/views/ViewHistory.dart';
+import 'package:dpwdapp/views/ViewMap.dart';
 import 'package:flutter/material.dart';
 import 'package:dpwdapp/views/LoginPage.dart';
 
@@ -33,12 +34,22 @@ class AppRoutes {
   static const ROUTE_HistoryPage = '/projectHistory';
   static const ROUTE_UpdateProject = '/updateProject';
 
+  static const ROUTE_ViewOnMap = '/viewOnMap';
+  
+
   static Route<dynamic> generateRoutes(RouteSettings settings) {
     switch (settings.name) {
       case ROUTE_CreateProject:
         return MaterialPageRoute(
           settings: settings,
           builder: (_) => CreateProject(),
+        );
+        break;
+
+      case ROUTE_ViewOnMap:
+        return MaterialPageRoute(
+          settings: settings,
+          builder: (_) => ViewOnMap(),
         );
         break;
 
