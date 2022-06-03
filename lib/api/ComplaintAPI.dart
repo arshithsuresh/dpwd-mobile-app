@@ -10,15 +10,6 @@ class ComplaintAPI {
 
   final String _baseEndpoint = "/channel/road/complaints/";
 
-  Future<String> encodeRegion({Location location}) async {
-    final result = await _httpService.getRequest(
-        endpoint: "/location/encode?lat=${location.lat}&long=${location.lng}");
-    if (result.statusCode == 200) {
-      return result.data["geohash"];
-    }
-    return null;
-  }
-
   Future<Complaint> getComplaintByID({String complaintID}) async {
     final result =
         await _httpService.getRequest(endpoint: _baseEndpoint + complaintID);
@@ -29,7 +20,7 @@ class ComplaintAPI {
     return null;
   }
 
-  Future<bool> createComplaint({Complaint complaint, String complaintID, String userid}) async {
+  Future<bool> createComplaint({Complaint complaint, String complaintID}) async {
 
     final updateData = {
       "bid": complaint.bid,
@@ -41,8 +32,9 @@ class ComplaintAPI {
       "createdDate": complaint.createdDate,
       "region": complaint.region,
       "type": complaint.type,
-      "createdBy": userid,
-      "upVotes": [userid],
+      "status": complaint.status.toString(),
+      "createdBy": complaint.createdBy,
+      "upVotes": [complaint.createdBy],
       "signatures":[]
     };
     final result = await _httpService.postRequest(
@@ -95,6 +87,20 @@ class ComplaintAPI {
     }
 
     return null;
+  }
+
+  Future<String> encodeToRegion({Location latLng}) async {
+    final result = await _httpService.getRequest(
+        endpoint: "/location/encode?lat=${latLng.lat}&long=${latLng.lng}");
+    
+    if(result.statusCode == 200)
+    {
+      print(result.data["geohash"]);
+      return result.data["geohash"];
+    }
+
+    return null;
+    
   }
 
   Future<bool> signComplaint({String complaintID}) async {

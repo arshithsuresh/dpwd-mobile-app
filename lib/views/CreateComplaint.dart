@@ -1,67 +1,168 @@
+import 'dart:async';
 import 'dart:convert';
 
-import 'package:dpwdapp/api/ProjectAPI.dart';
+import 'package:dpwdapp/api/ComplaintAPI.dart';
 import 'package:dpwdapp/components/buttons/PrimaryButton.dart';
+import 'package:dpwdapp/constants/constants.dart';
 import 'package:dpwdapp/core/Routes.dart';
+import 'package:dpwdapp/model/complaintModel.dart';
 import 'package:dpwdapp/model/projectModel.dart';
+import 'package:dpwdapp/state/complaints/ComplaintProvider.dart';
 import 'package:dpwdapp/state/project/ProjectProvider.dart';
+import 'package:dpwdapp/state/user/UserProvider.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:flutter/src/foundation/key.dart';
-import 'package:flutter/src/widgets/framework.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
+import 'package:location/location.dart' as gMapLoc;
 
 import 'package:crypto/crypto.dart';
 
+class CreateComplaint extends StatefulWidget {
+  const CreateComplaint({Key key}) : super(key: key);
 
-class CreateComplaint extends StatelessWidget {
-  CreateComplaint({Key key}) : super(key: key);
+  @override
+  State<CreateComplaint> createState() => _CreateComplaintState();
+}
 
-  
-
+class _CreateComplaintState extends State<CreateComplaint> {
   final TextEditingController txtTitle = TextEditingController();
-  final TextEditingController txtPID = TextEditingController();
-  final TextEditingController txtSDate = TextEditingController();
-  final TextEditingController txtApxEndDate = TextEditingController();
-  final TextEditingController txtBudget = TextEditingController();
-  final TextEditingController txtRegion = TextEditingController();
+  final TextEditingController txtShortDesc = TextEditingController();
   final TextEditingController txtDesc = TextEditingController();
-  final TextEditingController txtContractorID = TextEditingController();
+  final TextEditingController txtCreatedDate = TextEditingController();
+  final TextEditingController txtRegion = TextEditingController();
 
-  dummyProjectInfo(){
+  Completer<GoogleMapController> _controller = Completer();
+  Marker _pickMarker;
+  LatLng pickedLocation;
+
+  String txtComplaintType = ComplaintType[0];
+  gMapLoc.Location location = gMapLoc.Location();
+
+  dummyProjectInfo() {
     txtTitle.text = "CHNGR - TVLA Bypass";
-    txtPID.text = "PID0003341";
-    txtSDate.text = "12/03/2022";
-    txtApxEndDate.text = "30/12/2022";
-    txtBudget.text = "12";
-    txtDesc.text = "New bypass from chengannur to thiruvalla";
-    txtContractorID.text = "0x0001234";
+    final curDate = DateTime.now().toString();
+    txtCreatedDate.text = curDate.substring(0, curDate.length - 10);
+    txtShortDesc.text = "Pothole on road. High";
+    txtDesc.text = "Pothole on road. Very bad condition of road";
+    txtRegion.text = pickedLocation == null ? "" : pickedLocation.toString();
+  }
+ 
+  Future<LatLng> pickLocation(context) async {
+    await showDialog(
+        context: context,
+        builder: (context) {
+          return FutureBuilder(
+            future: location.getLocation(),
+            builder: (context, snapshot) {
+              if (!snapshot.hasData) {
+                return Container(
+                    alignment: Alignment.center,
+                    child: Container(
+                      width: 60,
+                      height: 60,
+                      padding: const EdgeInsets.all(8.0),
+                      child: CircularProgressIndicator(),
+                    ));
+              } else {
+                final gMapLoc.LocationData location = snapshot.data;
+                if (_pickMarker == null)
+                  _pickMarker = Marker(
+                    markerId: MarkerId("picker"),
+                    position: LatLng(location.latitude, location.longitude),
+                  );
+                print("Data");
+                return Container(
+                  decoration:
+                      BoxDecoration(borderRadius: BorderRadius.circular(12)),
+                  margin:
+                      EdgeInsets.only(top: 30, bottom: 80, left: 12, right: 12),
+                  child: Stack(
+                    children: [
+                      Container(
+                        margin: EdgeInsets.only(top: 40),
+                        child: GoogleMap(
+                          markers: {_pickMarker},
+                          myLocationEnabled: true,
+                          myLocationButtonEnabled: true,
+                          onTap: (latlng) {
+                            setState(() {
+                              pickedLocation = latlng;
+                              _pickMarker = Marker(
+                                  markerId: MarkerId("picker"),
+                                  position: latlng);
+                            });
+                            Navigator.pop(context);
+                          },
+                          initialCameraPosition: CameraPosition(
+                              target:
+                                  LatLng(location.latitude, location.longitude),
+                              zoom: 18),
+                          mapType: MapType.normal,
+                          onMapCreated: (GoogleMapController controller) {
+                            _controller.complete(controller);
+                          },
+                        ),
+                      ),
+                      Align(
+                        alignment: Alignment.topCenter,
+                        child: Container(
+                          padding: EdgeInsets.only(top: 12),
+                          child: Text(
+                            "Pick a Location. Default : user location.",
+                            style: TextStyle(
+                                fontSize: 12,
+                                backgroundColor: Colors.white,
+                                decoration: TextDecoration.none,
+                                color: Colors.black,
+                                fontWeight: FontWeight.bold),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                );
+              }
+            },
+          );
+        });
+    return pickedLocation;
   }
 
-  Future<bool> createProject(context) async {
+  Future<bool> createComplaint(context) async {
+    final txtBID = sha256
+        .convert(utf8.encode(txtTitle.text + txtCreatedDate.text))
+        .toString();
 
-    final txtBID = sha256.convert(utf8.encode(txtPID.text)).toString();
+    if (txtBID.length < 5 ||
+        txtShortDesc.text.length < 5 ||
+        txtDesc.text.length < 10 ||
+        txtCreatedDate.text.length < 4 ||
+        txtRegion.text.length < 2) {
+      return false;
+    }
 
-    if(txtBID.length<5 || txtPID.text.length<5 || txtSDate.text.length<4 || txtApxEndDate.text.length<4 ||
-        txtBudget.text.length<2 || txtDesc.text.length<10 || txtContractorID.text.length<5)
-        {
-          return false;
-        }
+    String userid = Provider.of<UserProvider>(context, listen:false).curUser.id;    
 
-    final projectData = Project(
-        bid: txtBID,
-        pid: txtPID.text,
-        sDate: txtSDate.text,
-        apxEndDate: txtApxEndDate.text,
-        budget: double.parse(txtBudget.text),
-        desc: txtDesc.text,
-        contractorID: txtContractorID.text,
-        signatures: [],
-        name: txtTitle.text,
-        updates: []);
+    Complaint complaintData = Complaint(
+      bid: txtBID,
+      complaintID: txtBID,
+      createdBy: userid,
+      createdDate: txtCreatedDate.text,
+      detailedDesc: txtDesc.text,
+      shortDesc: txtShortDesc.text,
+      location:
+          Location(lat: pickedLocation.latitude, lng: pickedLocation.longitude),
+      region: txtRegion.text,
+      signatures: [],
+      title: txtTitle.text,
+      type: txtComplaintType,
+      status: 0,
+      upVotes: [],
+          
+    );
 
-    final result =
-        await Provider.of<ProjectsProvider>(context, listen: false).createProject(projectData);
+    final result = await Provider.of<ComplaintProvider>(context, listen: false)
+        .createComplaint(complaintData, userid);    
 
     return result;
   }
@@ -90,7 +191,7 @@ class CreateComplaint extends StatelessWidget {
                 child: Column(
                   children: [
                     Text(
-                      "Create New Project",
+                      "Register Complaint",
                       style:
                           TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
                     ),
@@ -106,21 +207,7 @@ class CreateComplaint extends StatelessWidget {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text("Project ID"),
-                          TextField(
-                            controller: txtPID,
-                            decoration: const InputDecoration(
-                                fillColor: Colors.white,
-                                filled: true,
-                                border: OutlineInputBorder(
-                                    borderSide: BorderSide(
-                                        width: 1, color: Colors.black),
-                                    borderRadius: BorderRadius.all(
-                                      Radius.circular(12),
-                                    ))),
-                          ),
-                          SizedBox(height: 8),
-                          Text("Project Titile"),
+                          Text("Complaint Subject"),
                           TextField(
                             controller: txtTitle,
                             decoration: const InputDecoration(
@@ -134,65 +221,9 @@ class CreateComplaint extends StatelessWidget {
                                     ))),
                           ),
                           SizedBox(height: 8),
-                          Row(
-                            mainAxisSize: MainAxisSize.max,
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Container(
-                                width: 125,
-                                child: Column(
-                                  children: [
-                                    Text("Start Date"),
-                                    TextField(
-                                      keyboardType: TextInputType.datetime,
-                                      controller: txtSDate,
-                                      decoration: const InputDecoration(
-                                          fillColor: Colors.white,
-                                          filled: true,
-                                          border: OutlineInputBorder(
-                                              borderSide: BorderSide(
-                                                  width: 1,
-                                                  color: Colors.black),
-                                              borderRadius: BorderRadius.all(
-                                                Radius.circular(12),
-                                              ))),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              SizedBox(
-                                width: 8,
-                              ),
-                              Container(
-                                width: 125,
-                                child: Column(
-                                  children: [
-                                    Text("End Date"),
-                                    TextField(
-                                      keyboardType: TextInputType.datetime,
-                                      controller: txtApxEndDate,
-                                      decoration: const InputDecoration(
-                                          fillColor: Colors.white,
-                                          filled: true,
-                                          border: OutlineInputBorder(
-                                              borderSide: BorderSide(
-                                                  width: 1,
-                                                  color: Colors.black),
-                                              borderRadius: BorderRadius.all(
-                                                Radius.circular(12),
-                                              ))),
-                                    ),
-                                  ],
-                                ),
-                              )
-                            ],
-                          ),
-                          SizedBox(height: 8),
-                          Text("Budget (in Cr.)"),
+                          Text("Short Description"),
                           TextField(
-                            controller: txtBudget,
-                            keyboardType:
-                                TextInputType.numberWithOptions(decimal: true),
+                            controller: txtShortDesc,
                             decoration: const InputDecoration(
                                 fillColor: Colors.white,
                                 filled: true,
@@ -203,46 +234,6 @@ class CreateComplaint extends StatelessWidget {
                                       Radius.circular(12),
                                     ))),
                           ),
-                          SizedBox(height: 8),
-                          // Row(
-                          //   mainAxisSize: MainAxisSize.max,
-                          //   children: [
-                          //     Column(
-                          //       crossAxisAlignment: CrossAxisAlignment.start,
-                          //       children: [
-                          //         Text("Region"),
-                          //         Container(
-                          //           width: 200,
-                          //           child: TextField(
-                          //             controller: txtRegion,
-                          //             decoration: const InputDecoration(
-                          //                 fillColor: Colors.white,
-                          //                 filled: true,
-                          //                 border: OutlineInputBorder(
-                          //                     borderSide: BorderSide(
-                          //                         width: 1,
-                          //                         color: Colors.black),
-                          //                     borderRadius: BorderRadius.all(
-                          //                       Radius.circular(12),
-                          //                     ))),
-                          //           ),
-                          //         ),
-                          //       ],
-                          //     ),
-                          //     Container(
-                          //         alignment: Alignment.bottomRight,
-                          //         height: 60,
-                          //         width: 60,
-                          //         margin: EdgeInsets.only(left: 4),
-                          //         child: ElevatedButton(
-                          //           onPressed: () {},
-                          //           child: Icon(Icons.location_pin),
-                          //           style: ElevatedButton.styleFrom(
-                          //               maximumSize: Size(60, 50),
-                          //               minimumSize: Size(60, 50)),
-                          //         ))
-                          //   ],
-                          // ),
                           SizedBox(height: 8),
                           Text("Description"),
                           TextField(
@@ -260,9 +251,67 @@ class CreateComplaint extends StatelessWidget {
                                     ))),
                           ),
                           SizedBox(height: 8),
-                          Text("Contractor"),
+                          Row(
+                            mainAxisSize: MainAxisSize.max,
+                            children: [
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text("Pick Location"),
+                                  Container(
+                                    width: 200,
+                                    child: TextField(
+                                      controller: txtRegion,
+                                      decoration: const InputDecoration(
+                                          fillColor: Colors.white,
+                                          filled: true,
+                                          border: OutlineInputBorder(
+                                              borderSide: BorderSide(
+                                                  width: 1,
+                                                  color: Colors.black),
+                                              borderRadius: BorderRadius.all(
+                                                Radius.circular(12),
+                                              ))),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              Container(
+                                  alignment: Alignment.bottomRight,
+                                  height: 60,
+                                  width: 60,
+                                  margin: EdgeInsets.only(left: 4),
+                                  child: ElevatedButton(
+                                    onPressed: () {
+                                      pickLocation(context)
+                                          .then((selectedLatLng) {
+                                        setState(() {
+                                          ComplaintAPI()
+                                              .encodeToRegion(
+                                                  latLng: Location(
+                                                      lat: selectedLatLng
+                                                          .latitude,
+                                                      lng: selectedLatLng
+                                                          .longitude))
+                                              .then((encodedRegion) {
+                                            txtRegion.text = encodedRegion;
+                                          });
+                                        });
+                                      });
+                                    },
+                                    child: Icon(Icons.location_pin),
+                                    style: ElevatedButton.styleFrom(
+                                        maximumSize: Size(60, 50),
+                                        minimumSize: Size(60, 50)),
+                                  ))
+                            ],
+                          ),
+                          SizedBox(height: 8),
+                          Text("Created Date"),
                           TextField(
-                            controller: txtContractorID,
+                            controller: txtCreatedDate,
+                            keyboardType:
+                                TextInputType.numberWithOptions(decimal: true),
                             decoration: const InputDecoration(
                                 fillColor: Colors.white,
                                 filled: true,
@@ -274,14 +323,37 @@ class CreateComplaint extends StatelessWidget {
                                     ))),
                           ),
                           SizedBox(height: 8),
+                          Text("Complaint Type"),
+                          DropdownButtonFormField(
+                              decoration: const InputDecoration(
+                                border: OutlineInputBorder(
+                                    borderSide: BorderSide(
+                                        width: 1, color: Colors.black),
+                                    borderRadius: BorderRadius.all(
+                                      Radius.circular(12),
+                                    )),
+                              ),
+                              value: txtComplaintType,
+                              items:
+                                  ComplaintType.map<DropdownMenuItem<String>>(
+                                      (String value) {
+                                return DropdownMenuItem<String>(
+                                  value: value,
+                                  child: Text(value),
+                                );
+                              }).toList(),
+                              onChanged: (item) {
+                                txtComplaintType = item;
+                              }),
+                          SizedBox(height: 8),
                           PrimaryButton(
                               title: "Create",
                               onPressed: () {
-                                createProject(context).then((value) {
+                                createComplaint(context).then((value) {
                                   if (value) {
                                     ScaffoldMessenger.of(context).showSnackBar(
                                         SnackBar(
-                                            content: Text("Project Created!")));
+                                            content: Text("Complaint Registered!")));
                                     Future.delayed(
                                         Duration(seconds: 3),
                                         () => Navigator.popAndPushNamed(context,
@@ -290,7 +362,7 @@ class CreateComplaint extends StatelessWidget {
                                     ScaffoldMessenger.of(context).showSnackBar(
                                         SnackBar(
                                             content: Text(
-                                                "Error! Project Creation failed")));
+                                                "Error! Complaint Registered failed")));
                                   }
                                 });
                               })

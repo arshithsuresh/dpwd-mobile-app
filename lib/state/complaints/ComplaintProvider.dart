@@ -40,7 +40,7 @@ class ComplaintProvider extends ChangeNotifier {
     return null;
   }
 
-  Future<bool> createComplaint(Complaint complaintData) async {
+  Future<bool> createComplaint(Complaint complaintData, String userid) async {
     try {
       final result = await _complaintAPI.createComplaint(
           complaint: complaintData, complaintID: complaintData.bid);

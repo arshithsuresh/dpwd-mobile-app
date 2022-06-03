@@ -35,7 +35,7 @@ class ViewOnMapState extends State<ViewOnMap> {
             
             initialCameraPosition: CameraPosition(
               target: args,
-              zoom: 12
+              zoom: 18
             ),
             markers: {_pickMarker},
             mapType: MapType.normal,
