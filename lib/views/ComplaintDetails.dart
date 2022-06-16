@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:dpwdapp/components/cards/ComplaintCard.dart';
 import 'package:dpwdapp/components/cards/ProjectCard.dart';
 import 'package:dpwdapp/components/cards/UpdateCard.dart';
@@ -328,21 +330,21 @@ class ComplaintDetails extends StatelessWidget {
                   children: [
                     if (userProvider.isGovtUser() ||
                         userProvider.isContractorUser())
-                    ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                            elevation: 0,
-                            primary: Colors.orangeAccent,
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(18))),
-                        onPressed: () {
-                          showActionConfimation(
-                              context: context,
-                              message:
-                                  "Are you sure you want to flag this complaint as Pending Verification?",
-                              action: complaintProvider
-                                  .updateComplaintStatusPending);
-                        },
-                        child: Text("Flag Pending Verification")),
+                      ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                              elevation: 0,
+                              primary: Colors.orangeAccent,
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(18))),
+                          onPressed: () {
+                            showActionConfimation(
+                                context: context,
+                                message:
+                                    "Are you sure you want to flag this complaint as Pending Verification?",
+                                action: complaintProvider
+                                    .updateComplaintStatusPending);
+                          },
+                          child: Text("Flag Pending Verification")),
                     if (userProvider.isGovtUser() ||
                         userProvider.isContractorUser())
                       ElevatedButton(
@@ -448,13 +450,27 @@ class ComplaintDetails extends StatelessWidget {
                                   ));
                         },
                         child: Text("Up Vote")),
+                        if(data.image !=null)
                     ElevatedButton(
                         style: ElevatedButton.styleFrom(
                             elevation: 0,
                             primary: Colors.blue,
                             shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(18))),
-                        onPressed: () {},
+                        onPressed: () {
+                          showDialog(
+                              context: context,
+                              builder: (context) {
+                                log("Image : http://192.168.1.9:8088/ipfs/${data.image}");
+                                return AlertDialog(
+                                  content: Container(
+                                      child: Image(
+                                    image: NetworkImage(
+                                        "http://192.168.1.9:8088/ipfs/${data.image}"),
+                                  )),
+                                );
+                              });
+                        },
                         child: Text("Show Images"))
                   ],
                 )

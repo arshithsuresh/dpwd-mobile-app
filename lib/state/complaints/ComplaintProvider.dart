@@ -1,3 +1,5 @@
+
+import 'dart:io';
 import 'dart:math';
 
 import 'package:dpwdapp/api/ComplaintAPI.dart';
@@ -40,10 +42,10 @@ class ComplaintProvider extends ChangeNotifier {
     return null;
   }
 
-  Future<bool> createComplaint(Complaint complaintData, String userid) async {
+  Future<bool> createComplaint(Complaint complaintData, File image ,String userid) async {
     try {
       final result = await _complaintAPI.createComplaint(
-          complaint: complaintData, complaintID: complaintData.bid);
+          complaint: complaintData, complaintID: complaintData.bid, image: image);
 
       if (result == true) _complaints.add(complaintData);
       notifyListeners();

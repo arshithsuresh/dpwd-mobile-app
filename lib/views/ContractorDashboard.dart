@@ -1,4 +1,7 @@
+import 'package:dpwdapp/core/Routes.dart';
+import 'package:dpwdapp/state/user/UserProvider.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class ContractorDashboard extends StatelessWidget {
   @override
@@ -31,7 +34,7 @@ class ContractorDashboard extends StatelessWidget {
                           TextStyle(fontSize: 14, fontWeight: FontWeight.w400),
                     ),
                     Text(
-                      "ABC Contractors",
+                      Provider.of<UserProvider>(context,listen: false).curUser.name,
                       style:
                           TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                     ),
@@ -42,7 +45,7 @@ class ContractorDashboard extends StatelessWidget {
                   child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text("Complaints on your Projects"),
+                  Text("Complaints"),
                   SizedBox(
                     height: 4,
                   ),
@@ -55,7 +58,9 @@ class ContractorDashboard extends StatelessWidget {
                     child: Column(
                       children: [
                         ElevatedButton(
-                          onPressed: () {},
+                          onPressed: () {
+                            Navigator.pushNamed(context, AppRoutes.ROUTE_ViewComplaints);
+                          },
                           child: Text("View Complaints"),
                           style: ElevatedButton.styleFrom(
                               minimumSize: Size(double.infinity, 48),
@@ -72,7 +77,7 @@ class ContractorDashboard extends StatelessWidget {
                   child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text("Your Projects"),
+                  Text("Projects"),
                   SizedBox(
                     height: 4,
                   ),
@@ -85,7 +90,9 @@ class ContractorDashboard extends StatelessWidget {
                     child: Column(
                       children: [
                         ElevatedButton(
-                          onPressed: () {},
+                          onPressed: () {
+                            Navigator.pushNamed(context, AppRoutes.ROUTE_ViewProjects);
+                          },
                           child: Text("View On Going Projects"),
                           style: ElevatedButton.styleFrom(
                               minimumSize: Size(double.infinity, 48),
@@ -96,18 +103,9 @@ class ContractorDashboard extends StatelessWidget {
                           height: 8,
                         ),
                         ElevatedButton(
-                          onPressed: () {},
-                          child: Text("View Upcoming Projects"),
-                          style: ElevatedButton.styleFrom(
-                              minimumSize: Size(double.infinity, 48),
-                              elevation: 0,
-                              primary: Colors.green),
-                        ),
-                        SizedBox(
-                          height: 8,
-                        ),
-                        ElevatedButton(
-                          onPressed: () {},
+                          onPressed: () {
+                            Navigator.pushNamed(context, AppRoutes.ROUTE_ViewProjects);
+                          },
                           child: Text("View All Projects"),
                           style: ElevatedButton.styleFrom(
                               minimumSize: Size(double.infinity, 48),
@@ -119,47 +117,6 @@ class ContractorDashboard extends StatelessWidget {
                   )
                 ],
               )),
-              Container(
-                margin: EdgeInsets.only(top:16),
-                  child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text("Suppliers"),
-                  SizedBox(
-                    height: 4,
-                  ),
-                  Container(
-                    padding: EdgeInsets.all(12),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(8),
-                      color: Colors.white,
-                    ),
-                    child: Column(
-                      children: [
-                        ElevatedButton(
-                          onPressed: () {},
-                          child: Text("View All Supliers"),
-                          style: ElevatedButton.styleFrom(
-                              minimumSize: Size(double.infinity, 48),
-                              elevation: 0,
-                              primary: Colors.green),
-                        ),
-                        SizedBox(
-                          height: 8,
-                        ),
-                        ElevatedButton(
-                          onPressed: () {},
-                          child: Text("Orders"),
-                          style: ElevatedButton.styleFrom(
-                              minimumSize: Size(double.infinity, 48),
-                              elevation: 0,
-                              primary: Colors.green),
-                        ),
-                      ],
-                    ),
-                  )
-                ],
-              ))
             ],
           ),
         ),

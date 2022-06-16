@@ -9,7 +9,6 @@ class Location {
         lat: double.parse(data['lat'].toString()),
         lng: double.parse(data['long'].toString()));
   }
-
 }
 
 class Complaint {
@@ -26,29 +25,31 @@ class Complaint {
   List<String> signatures;
   int status;
   String type;
+  String image;
+  String resolvedImage;
   List<String> upVotes;
 
-  getBID(){
-    if(bid.length<16)
-    return bid;
+  getBID() {
+    if (bid.length < 16) return bid;
 
-    final len= bid.length;
-    return bid.substring(0,12)+"...."+ bid.substring(len-6,len-1);
+    final len = bid.length;
+    return bid.substring(0, 12) + "...." + bid.substring(len - 6, len - 1);
   }
 
-  getCreatedByID()
-  {
-    if(createdBy.length<16)
-    return bid;
+  getCreatedByID() {
+    if (createdBy.length < 16) return bid;
 
-    final len= createdBy.length;
-    return createdBy.substring(0,12)+"...."+ createdBy.substring(len-6,len-1);
+    final len = createdBy.length;
+    return createdBy.substring(0, 12) +
+        "...." +
+        createdBy.substring(len - 6, len - 1);
   }
 
-  getNumberOfUpVotes(){
+  getNumberOfUpVotes() {
     return upVotes.length;
   }
-  getNumberOfSignatures(){
+
+  getNumberOfSignatures() {
     return signatures.length;
   }
 
@@ -65,7 +66,9 @@ class Complaint {
       this.signatures,
       this.status,
       this.type,
-      this.upVotes});
+      this.upVotes,
+      this.image,
+      this.resolvedImage});
 
   factory Complaint.fromJson(Map<String, dynamic> data) {
     return Complaint(
@@ -78,9 +81,12 @@ class Complaint {
         location: Location.fromJson(data['location']),
         region: data['region'],
         shortDesc: data['shortDesc'],
-        signatures: data['signatures'].map<String>((val)=>val.toString()).toList(),
+        image: data.containsKey("image")?data["image"]:null,
+        resolvedImage: data.containsKey("resolvedImage")?data["resolvedImage"]:null,
+        signatures:data.containsKey("signatures")?
+            data['signatures'].map<String>((val) => val.toString()).toList():[],
         status: int.parse(data['status'].toString()),
-        upVotes: data['upVotes'].map<String>((val)=>val.toString()).toList(),
+        upVotes: data['upVotes'].map<String>((val) => val.toString()).toList(),
         type: data['type']);
   }
 }

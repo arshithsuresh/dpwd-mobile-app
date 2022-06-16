@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:dpwdapp/api/httpservice.dart';
 import 'package:dpwdapp/error/ProjectExceptions.dart';
@@ -20,7 +21,7 @@ class ComplaintAPI {
     return null;
   }
 
-  Future<bool> createComplaint({Complaint complaint, String complaintID}) async {
+  Future<bool> createComplaint({Complaint complaint,File image, String complaintID}) async {
 
     final updateData = {
       "bid": complaint.bid,
@@ -35,10 +36,10 @@ class ComplaintAPI {
       "status": complaint.status.toString(),
       "createdBy": complaint.createdBy,
       "upVotes": [complaint.createdBy],
-      "signatures":[]
+      "signatures":<String>[]
     };
-    final result = await _httpService.postRequest(
-        endpoint: _baseEndpoint + "create/" + complaintID, data: updateData);
+    final result = await _httpService.sendFormPost(
+        endpoint: _baseEndpoint + "create/" + complaintID, data: updateData, files: {"image":image});
 
     if (result.statusCode == 401) {
       throw UnAuthorizedUser();

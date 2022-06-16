@@ -1,15 +1,16 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 
+import 'package:path/path.dart';
 import 'package:dpwdapp/api/ComplaintAPI.dart';
 import 'package:dpwdapp/components/buttons/PrimaryButton.dart';
 import 'package:dpwdapp/constants/constants.dart';
 import 'package:dpwdapp/core/Routes.dart';
 import 'package:dpwdapp/model/complaintModel.dart';
-import 'package:dpwdapp/model/projectModel.dart';
 import 'package:dpwdapp/state/complaints/ComplaintProvider.dart';
-import 'package:dpwdapp/state/project/ProjectProvider.dart';
 import 'package:dpwdapp/state/user/UserProvider.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
@@ -31,6 +32,8 @@ class _CreateComplaintState extends State<CreateComplaint> {
   final TextEditingController txtCreatedDate = TextEditingController();
   final TextEditingController txtRegion = TextEditingController();
 
+  File complaintImage;
+
   Completer<GoogleMapController> _controller = Completer();
   Marker _pickMarker;
   LatLng pickedLocation;
@@ -46,7 +49,13 @@ class _CreateComplaintState extends State<CreateComplaint> {
     txtDesc.text = "Pothole on road. Very bad condition of road";
     txtRegion.text = pickedLocation == null ? "" : pickedLocation.toString();
   }
- 
+
+  @protected
+  @mustCallSuper
+  void initState() {
+    dummyProjectInfo();
+  }
+
   Future<LatLng> pickLocation(context) async {
     await showDialog(
         context: context,
@@ -137,11 +146,13 @@ class _CreateComplaintState extends State<CreateComplaint> {
         txtShortDesc.text.length < 5 ||
         txtDesc.text.length < 10 ||
         txtCreatedDate.text.length < 4 ||
-        txtRegion.text.length < 2) {
+        txtRegion.text.length < 2 || 
+        complaintImage == null) {
       return false;
     }
 
-    String userid = Provider.of<UserProvider>(context, listen:false).curUser.id;    
+    String userid =
+        Provider.of<UserProvider>(context, listen: false).curUser.id;
 
     Complaint complaintData = Complaint(
       bid: txtBID,
@@ -158,18 +169,17 @@ class _CreateComplaintState extends State<CreateComplaint> {
       type: txtComplaintType,
       status: 0,
       upVotes: [],
-          
     );
 
     final result = await Provider.of<ComplaintProvider>(context, listen: false)
-        .createComplaint(complaintData, userid);    
+        .createComplaint(complaintData,complaintImage ,userid);
 
     return result;
   }
 
   @override
   Widget build(BuildContext context) {
-    dummyProjectInfo();
+    
     return Scaffold(
         floatingActionButton: FloatingActionButton(
           backgroundColor: Colors.white,
@@ -307,6 +317,32 @@ class _CreateComplaintState extends State<CreateComplaint> {
                             ],
                           ),
                           SizedBox(height: 8),
+                          Text("Complaint Image"),
+                          Row(
+                            children: [
+                              Expanded(child: Text("${complaintImage==null?"Not Selected":basename(complaintImage.path)}")),
+                              SizedBox(width: 4,),
+                              ElevatedButton(
+                                  onPressed: () async {
+                                    try {
+                                      final result =
+                                          await FilePicker.platform.pickFiles();
+
+                                      if (result != null) {
+                                        setState(() {
+                                          complaintImage =
+                                              File(result.files.single.path);
+                                        });
+                                      }
+                                    } catch (e) {
+                                      print(e.toString());
+                                    }
+                                  },
+                                  child: Text("Select Image")),                                  
+                                  
+                            ],
+                          ),
+                          SizedBox(height: 8),
                           Text("Created Date"),
                           TextField(
                             controller: txtCreatedDate,
@@ -353,7 +389,8 @@ class _CreateComplaintState extends State<CreateComplaint> {
                                   if (value) {
                                     ScaffoldMessenger.of(context).showSnackBar(
                                         SnackBar(
-                                            content: Text("Complaint Registered!")));
+                                            content:
+                                                Text("Complaint Registered!")));
                                     Future.delayed(
                                         Duration(seconds: 3),
                                         () => Navigator.popAndPushNamed(context,

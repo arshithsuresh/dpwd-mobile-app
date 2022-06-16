@@ -83,7 +83,7 @@ class UpdateCard extends StatelessWidget {
                           ));
                 },
                 child:
-                    Text("Signed Authorities", style: TextStyle(fontSize: 11)),
+                    Text("Signed Authorities - ${_data.signatures.length}", style: TextStyle(fontSize: 11)),
               ),
               SizedBox(
                 width: 4,
