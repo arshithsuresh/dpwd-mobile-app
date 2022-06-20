@@ -1,13 +1,14 @@
 import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
+import 'package:dpwdapp/constants/urlConstants.dart';
 import 'package:path/path.dart';
 import 'package:dio/dio.dart';
 
 class HttpService {
   static final HttpService _httpService = HttpService._internal();
   Dio _dio;
-  final _baseURL = "http://192.168.1.9:3000/api";
+  final _baseURL = API_BASE_URL;
 
   factory HttpService() {
     return _httpService;

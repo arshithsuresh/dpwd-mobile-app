@@ -1,5 +1,6 @@
 import 'package:dpwdapp/components/cards/ComplaintCard.dart';
 import 'package:dpwdapp/state/complaints/ComplaintProvider.dart';
+import 'package:dpwdapp/state/user/UserProvider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -7,6 +8,12 @@ class Complaints extends StatelessWidget {
   refreshContent(context) =>
       Provider.of<ComplaintProvider>(context, listen: false)
           .initializeAllComplaints();
+
+  getMyComplaints(context) {
+      final user = Provider.of<UserProvider>(context, listen: false).curUser.id;
+      Provider.of<ComplaintProvider>(context, listen: false)
+          .getUserComplaints(user: user);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -50,6 +57,17 @@ class Complaints extends StatelessWidget {
                   ),
                 ],
               ),
+            ),
+            Row(
+              children: [
+                ElevatedButton(onPressed: () {
+                  getMyComplaints(context);
+                }, child: Text("My Complaints")),
+                SizedBox(width: 8,),
+                ElevatedButton(onPressed: () {
+                  refreshContent(context);
+                }, child: Text("All"))
+              ],
             ),
             Consumer<ComplaintProvider>(builder: ((context, datas, child) {
               if (datas.getAllComplaints().length > 0)

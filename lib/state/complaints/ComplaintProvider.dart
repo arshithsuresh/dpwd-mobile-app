@@ -42,6 +42,31 @@ class ComplaintProvider extends ChangeNotifier {
     return null;
   }
 
+  Future<List<Complaint>> getComplaintsByRegion({String region}) async {
+    final regionComplaints = await _complaintAPI.getComplaintByRegion(region: region);
+    
+    if (regionComplaints != null) {
+      notifyListeners();
+      return regionComplaints;
+    }
+    return [];
+  }
+
+  Future<void> getUserComplaints({String user}) async
+  {
+    _complaints = await getComplaintsByOwner(owner: user);
+    notifyListeners();
+  }
+
+  Future<List<Complaint>> getComplaintsByOwner({String owner}) async {
+    final ownerComplaints = await _complaintAPI.getComplaintByOwner(owner: owner);
+    if (ownerComplaints != null) {
+      notifyListeners();
+      return ownerComplaints;
+    }
+    return null;
+  }  
+
   Future<bool> createComplaint(Complaint complaintData, File image ,String userid) async {
     try {
       final result = await _complaintAPI.createComplaint(

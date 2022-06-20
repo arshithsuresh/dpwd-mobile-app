@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:developer';
+import 'dart:io';
 
 import 'package:dpwdapp/api/httpservice.dart';
 import 'package:dpwdapp/error/ProjectExceptions.dart';
@@ -123,7 +124,7 @@ class ProjectAPI {
     return false;
   }
   
-  Future<bool> updateProject({ProjectUpdate update, String projectID}) async
+  Future<bool> updateProject({ProjectUpdate update,File image, String projectID}) async
   {
     final projectData = {
       "updateType" : update.updateType,
@@ -132,9 +133,12 @@ class ProjectAPI {
       "date" : update.date,
       "status" : update.status,
       "signatures":[]
-    };
+    };   
 
-    final result = await _httpService.postRequest(endpoint: _baseEndpoint+projectID+"/update", data: projectData);
+    final result = await _httpService.sendFormPost(
+        endpoint:_baseEndpoint+projectID+"/update",
+        data: projectData,
+        files: {"image": image});
 
     if(result.statusCode == 401)
     {

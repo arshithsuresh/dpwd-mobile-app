@@ -1,5 +1,7 @@
 import 'dart:convert';
-import 'dart:ffi';
+
+import 'package:dpwdapp/constants/urlConstants.dart';
+
 
 class Project {
   String bid;
@@ -75,6 +77,11 @@ class ProjectUpdate {
   String date;
   List<String> signatures;
   int status;
+  String image;
+
+  getImage(){    
+    return IPFS_BASE_URL+image;
+  }
 
   ProjectUpdate(
       {this.updateType,
@@ -82,16 +89,18 @@ class ProjectUpdate {
       this.desc,
       this.date,
       this.signatures,
-      this.status});
+      this.status,
+      this.image});
 
   factory ProjectUpdate.fromJson(Map<String, dynamic> data) {
     
     return ProjectUpdate(
-        updateType: data['updateType'],
+        updateType: int.parse(data['updateType'].toString()),
         title: data['title'],
         desc: data['desc'],
         date: data['date'],
         signatures:  data['signatures'].map<String>((val)=>val.toString()).toList(),
-        status: data['status']);
+        status: int.parse(data['status'].toString()),
+        image: data.containsKey('image')?data['image']:null);
   }
 }

@@ -460,13 +460,12 @@ class ComplaintDetails extends StatelessWidget {
                         onPressed: () {
                           showDialog(
                               context: context,
-                              builder: (context) {
-                                log("Image : http://192.168.1.9:8088/ipfs/${data.image}");
+                              builder: (context) {                                
                                 return AlertDialog(
                                   content: Container(
                                       child: Image(
                                     image: NetworkImage(
-                                        "http://192.168.1.9:8088/ipfs/${data.image}"),
+                                        data.getImage()),
                                   )),
                                 );
                               });

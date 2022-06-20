@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'dart:math';
 
 import 'package:dpwdapp/api/ProjectAPI.dart';
@@ -80,10 +81,10 @@ class ProjectsProvider extends ChangeNotifier {
     return null;
   }
 
-  Future<bool> updateProjectStatus({update}) async {
+  Future<bool> updateProjectStatus({update, File image}) async {
     try {
       final result = await _projectAPI.updateProject(
-          projectID: selectedProject.bid, update: update);
+          projectID: selectedProject.bid, update: update, image: image);
 
       if (result == true) {
         selectedProject =

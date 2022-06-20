@@ -1,3 +1,5 @@
+import 'package:dpwdapp/constants/urlConstants.dart';
+
 class Location {
   double lat;
   double lng;
@@ -35,7 +37,10 @@ class Complaint {
     final len = bid.length;
     return bid.substring(0, 12) + "...." + bid.substring(len - 6, len - 1);
   }
-
+  getImage(){
+    
+    return IPFS_BASE_URL+image;
+  }
   getCreatedByID() {
     if (createdBy.length < 16) return bid;
 

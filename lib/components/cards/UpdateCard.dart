@@ -82,13 +82,15 @@ class UpdateCard extends StatelessWidget {
                             ],
                           ));
                 },
-                child:
-                    Text("Signed Authorities - ${_data.signatures.length}", style: TextStyle(fontSize: 11)),
+                child: Text("Signed Authorities - ${_data.signatures.length}",
+                    style: TextStyle(fontSize: 11)),
               ),
               SizedBox(
                 width: 4,
               ),
-              if (!userProvider.isPublicUser() && userProvider.isVerifiedUser() && _interact)
+              if (!userProvider.isPublicUser() &&
+                  userProvider.isVerifiedUser() &&
+                  _interact)
                 ElevatedButton(
                     style: ElevatedButton.styleFrom(
                         elevation: 0,
@@ -119,7 +121,35 @@ class UpdateCard extends StatelessWidget {
                     child: Text(
                       "Sign Project",
                       style: TextStyle(fontSize: 11),
-                    ))
+                    )),
+              SizedBox(
+                width: 4,
+              ),
+              if(_data.image != null)
+              ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                      elevation: 0,                      
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(18))),
+                  onPressed: () {
+                    showDialog(
+                        context: context,
+                        builder: (context) => AlertDialog(
+                              title: Text("Update Image"),
+                              content: Container(
+                                child: Image(image: NetworkImage(_data.getImage())),
+                              ),
+                              actions: [
+                                ElevatedButton(
+                                    onPressed: () => Navigator.pop(context),
+                                    child: Text("Ok"))
+                              ],
+                            ));
+                  },
+                  child: Text(
+                    "Images",
+                    style: TextStyle(fontSize: 11),
+                  ))
             ],
           ),
         ],

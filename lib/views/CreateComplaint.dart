@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:dpwdapp/components/cards/ComplaintCardSmall.dart';
 import 'package:path/path.dart';
 import 'package:dpwdapp/api/ComplaintAPI.dart';
 import 'package:dpwdapp/components/buttons/PrimaryButton.dart';
@@ -54,6 +55,38 @@ class _CreateComplaintState extends State<CreateComplaint> {
   @mustCallSuper
   void initState() {
     dummyProjectInfo();
+  }
+
+  Future<void> pickComplaintLocation(context) async {
+    final selectedLatLng = await pickLocation(context);
+    final encodedRegion = await ComplaintAPI().encodeToRegion(
+        latLng: Location(
+            lat: selectedLatLng.latitude, lng: selectedLatLng.longitude));
+    setState(() {
+      txtRegion.text = encodedRegion;
+    });
+    print("INFO :: Encoded Region ${encodedRegion}");
+    final complaints =
+        await Provider.of<ComplaintProvider>(context, listen: false)
+            .getComplaintsByRegion(region: encodedRegion);
+
+    if (complaints.length > 0) {
+      showDialog(
+          useSafeArea: false,
+          context: context,
+          builder: (context) {
+            return AlertDialog(
+                title: Text("Previous Complaints"),
+                content: Container(
+                    child: ListView.builder(
+                        itemCount: complaints.length,
+                        itemBuilder: ((context, index) => ComplaintCardSmall(
+                              complaint: complaints[index],
+                            )))));
+          });
+    } else {
+      print("No Previous Complaints");
+    }
   }
 
   Future<LatLng> pickLocation(context) async {
@@ -146,7 +179,7 @@ class _CreateComplaintState extends State<CreateComplaint> {
         txtShortDesc.text.length < 5 ||
         txtDesc.text.length < 10 ||
         txtCreatedDate.text.length < 4 ||
-        txtRegion.text.length < 2 || 
+        txtRegion.text.length < 2 ||
         complaintImage == null) {
       return false;
     }
@@ -172,14 +205,13 @@ class _CreateComplaintState extends State<CreateComplaint> {
     );
 
     final result = await Provider.of<ComplaintProvider>(context, listen: false)
-        .createComplaint(complaintData,complaintImage ,userid);
+        .createComplaint(complaintData, complaintImage, userid);
 
     return result;
   }
 
   @override
   Widget build(BuildContext context) {
-    
     return Scaffold(
         floatingActionButton: FloatingActionButton(
           backgroundColor: Colors.white,
@@ -292,22 +324,8 @@ class _CreateComplaintState extends State<CreateComplaint> {
                                   width: 60,
                                   margin: EdgeInsets.only(left: 4),
                                   child: ElevatedButton(
-                                    onPressed: () {
-                                      pickLocation(context)
-                                          .then((selectedLatLng) {
-                                        setState(() {
-                                          ComplaintAPI()
-                                              .encodeToRegion(
-                                                  latLng: Location(
-                                                      lat: selectedLatLng
-                                                          .latitude,
-                                                      lng: selectedLatLng
-                                                          .longitude))
-                                              .then((encodedRegion) {
-                                            txtRegion.text = encodedRegion;
-                                          });
-                                        });
-                                      });
+                                    onPressed: () async {
+                                      await pickComplaintLocation(context);
                                     },
                                     child: Icon(Icons.location_pin),
                                     style: ElevatedButton.styleFrom(
@@ -320,8 +338,12 @@ class _CreateComplaintState extends State<CreateComplaint> {
                           Text("Complaint Image"),
                           Row(
                             children: [
-                              Expanded(child: Text("${complaintImage==null?"Not Selected":basename(complaintImage.path)}")),
-                              SizedBox(width: 4,),
+                              Expanded(
+                                  child: Text(
+                                      "${complaintImage == null ? "Not Selected" : basename(complaintImage.path)}")),
+                              SizedBox(
+                                width: 4,
+                              ),
                               ElevatedButton(
                                   onPressed: () async {
                                     try {
@@ -338,8 +360,7 @@ class _CreateComplaintState extends State<CreateComplaint> {
                                       print(e.toString());
                                     }
                                   },
-                                  child: Text("Select Image")),                                  
-                                  
+                                  child: Text("Select Image")),
                             ],
                           ),
                           SizedBox(height: 8),

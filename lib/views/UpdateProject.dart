@@ -1,28 +1,30 @@
-import 'dart:convert';
+import 'dart:io';
+import 'package:path/path.dart';
 
-import 'package:dpwdapp/api/ProjectAPI.dart';
 import 'package:dpwdapp/components/buttons/PrimaryButton.dart';
 import 'package:dpwdapp/constants/constants.dart';
 import 'package:dpwdapp/core/Routes.dart';
 import 'package:dpwdapp/model/projectModel.dart';
 import 'package:dpwdapp/state/project/ProjectProvider.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:flutter/src/foundation/key.dart';
-import 'package:flutter/src/widgets/framework.dart';
 import 'package:provider/provider.dart';
 
-import 'package:crypto/crypto.dart';
+class UpdateProject extends StatefulWidget {
+  const UpdateProject({Key key}) : super(key: key);
 
-class UpdateProject extends StatelessWidget {
-  UpdateProject({Key key}) : super(key: key);
+  @override
+  State<UpdateProject> createState() => _UpdateProjectState();
+}
 
+class _UpdateProjectState extends State<UpdateProject> {
   final TextEditingController txtTitle = TextEditingController();
   final TextEditingController txtDate = TextEditingController();
   final TextEditingController txtDesc = TextEditingController();
   final TextEditingController txtProgressUpdate = TextEditingController();
 
   String txtUpdateType = UpdateType.keys.first;
+  File _updateImage;
 
   dummyProjectInfo() {
     txtTitle.text = "Progress Update";
@@ -35,7 +37,8 @@ class UpdateProject extends StatelessWidget {
     if (txtTitle.text.length < 5 ||
         txtDate.text.length < 4 ||
         txtDesc.text.length < 10 ||
-        txtProgressUpdate.text.length < 1) {
+        txtProgressUpdate.text.length < 1 ||
+        _updateImage == null) {
       return false;
     }
 
@@ -48,7 +51,7 @@ class UpdateProject extends StatelessWidget {
         signatures: []);
 
     final result = await Provider.of<ProjectsProvider>(context, listen: false)
-        .updateProjectStatus(update: updateData);
+        .updateProjectStatus(update: updateData,image: _updateImage);
 
     return result;
   }
@@ -186,8 +189,37 @@ class UpdateProject extends StatelessWidget {
                                     ))),
                           ),
                           SizedBox(height: 8),
+                          Text("Update Image"),
+                          Row(
+                            children: [
+                              Expanded(
+                                  child: Text(
+                                      "${_updateImage == null ? "Not Selected" : basename(_updateImage.path)}")),
+                              SizedBox(
+                                width: 4,
+                              ),
+                              ElevatedButton(
+                                  onPressed: () async {
+                                    try {
+                                      final result =
+                                          await FilePicker.platform.pickFiles();
+
+                                      if (result != null) {
+                                        setState(() {
+                                          _updateImage =
+                                              File(result.files.single.path);
+                                        });
+                                      }
+                                    } catch (e) {
+                                      print(e.toString());
+                                    }
+                                  },
+                                  child: Text("Select Image")),
+                            ],
+                          ),
+                          SizedBox(height: 8),
                           PrimaryButton(
-                              title: "Create",
+                              title: "Update Project",
                               onPressed: () {
                                 updateProject(context).then((value) {
                                   if (value) {
